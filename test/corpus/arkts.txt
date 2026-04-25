@@ -1,0 +1,196 @@
+==================================
+Decorated exported struct
+==================================
+
+@Component
+export declare struct Foo {
+  @State count: number;
+  build(): void;
+}
+
+---
+
+(program
+  (export_statement
+    (decorator
+      (identifier))
+    (struct_declaration
+      (type_identifier)
+      (struct_body
+        (public_field_definition
+          (decorator
+            (identifier))
+          (property_identifier)
+          (type_annotation
+            (predefined_type)))
+        (method_signature
+          (property_identifier)
+          (formal_parameters)
+          (type_annotation
+            (predefined_type)))))))
+
+==================================
+Export default struct
+==================================
+
+export default struct HelloWorld {
+  build() {
+    Column() {
+      Text("Hello ArkTS")
+    }
+  }
+}
+
+---
+
+(program
+  (export_statement
+    (struct_declaration
+      (type_identifier)
+      (struct_body
+        (method_definition
+          (property_identifier)
+          (formal_parameters)
+          (statement_block
+            (expression_statement
+              (arkui_component_expression
+                (identifier)
+                (arguments)
+                (arkui_children
+                  (expression_statement
+                    (call_expression
+                      (identifier)
+                      (arguments
+                        (string
+                          (string_fragment))))))))))))))
+
+==================================
+Annotation declaration
+==================================
+
+@interface RouteOptions {
+  value: string = "default";
+  count: number = 1;
+}
+
+---
+
+(program
+  (annotation_declaration
+    (type_identifier)
+    (annotation_body
+      (annotation_property_definition
+        (property_identifier)
+        (type_annotation
+          (predefined_type))
+        (string
+          (string_fragment)))
+      (annotation_property_definition
+        (property_identifier)
+        (type_annotation
+          (predefined_type))
+        (number)))))
+
+==================================
+ArkUI component expression
+==================================
+
+Column() {
+  Text("Hello")
+}
+
+---
+
+(program
+  (expression_statement
+    (arkui_component_expression
+      (identifier)
+      (arguments)
+      (arkui_children
+        (expression_statement
+          (call_expression
+            (identifier)
+            (arguments
+              (string
+                (string_fragment)))))))))
+
+==================================
+Extend function with leading dot chain
+==================================
+
+@Extend(Text)
+function fancy(fontSize: number) {
+  .fontColor(Color.Red)
+  .fontSize(fontSize)
+}
+
+---
+
+(program
+  (function_declaration
+    (decorator
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier))))
+    (identifier)
+    (formal_parameters
+      (required_parameter
+        (identifier)
+        (type_annotation
+          (predefined_type))))
+    (statement_block
+      (expression_statement
+        (call_expression
+          (member_expression
+            (call_expression
+              (leading_dot_expression
+                (identifier))
+              (arguments
+                (member_expression
+                  (identifier)
+                  (property_identifier))))
+            (property_identifier))
+          (arguments
+            (identifier)))))))
+
+==================================
+Lazy import
+==================================
+
+import lazy { Foo as Bar } from "mod";
+
+---
+
+(program
+  (import_statement
+    (lazy_import_statement
+      (import_clause
+        (named_imports
+          (import_specifier
+            (identifier)
+            (identifier))))
+      (string
+        (string_fragment)))))
+
+==================================
+Optional struct method
+==================================
+
+struct A {
+  aboutToAppear?(): void {
+  }
+}
+
+---
+
+(program
+  (struct_declaration
+    (type_identifier)
+    (struct_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (type_annotation
+          (predefined_type))
+        (statement_block)))))
