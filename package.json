@@ -1,11 +1,12 @@
 {
   "name": "tree-sitter-arkts",
-  "version": "0.23.2",
+  "version": "0.0.1-beta.0",
   "description": "ArkTS grammar for tree-sitter",
   "repository": "https://github.com/tree-sitter/tree-sitter-arkts",
   "license": "MIT",
-  "author": "Max Brunsfeld <maxbrunsfeld@gmail.com>",
+  "author": "richerfu <southorange0929@foxmail.com> Max Brunsfeld <maxbrunsfeld@gmail.com>",
   "maintainers": [
+    "richerfu <southorange0929@foxmail.com>",
     "Amaan Qureshi <amaanq12@gmail.com>"
   ],
   "main": "bindings/node",
@@ -50,7 +51,8 @@
   },
   "scripts": {
     "install": "node-gyp-build",
-    "lint": "eslint grammar.js common/define-grammar.js scripts/extract-corpus-fixtures.mjs",
+    "lint": "eslint grammar.js common/define-grammar.js scripts/*.mjs",
+    "release:version": "node scripts/bump-version.mjs",
     "prestart": "tree-sitter build --wasm",
     "start": "tree-sitter playground",
     "test": "node --test bindings/node/*_test.js"

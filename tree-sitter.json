@@ -28,10 +28,14 @@
     }
   ],
   "metadata": {
-    "version": "0.23.2",
+    "version": "0.0.1-beta.0",
     "license": "MIT",
     "description": "ArkTS grammar for tree-sitter",
     "authors": [
+      {
+        "name": "richerfu",
+        "email": "southorange0929@foxmail.com"
+      },
       {
         "name": "Max Brunsfeld",
         "email": "maxbrunsfeld@gmail.com"
@@ -42,7 +46,7 @@
       }
     ],
     "links": {
-      "repository": "https://github.com/tree-sitter/tree-sitter-arkts"
+      "repository": "https://github.com/harmony-contrib/tree-sitter-arkts"
     }
   },
   "bindings": {

@@ -1,8 +1,9 @@
 [package]
 name = "tree-sitter-arkts"
 description = "ArkTS grammar for tree-sitter"
-version = "0.23.2"
+version = "0.0.1-beta.0"
 authors = [
+  "richerfu <southorange0929@foxmail.com>",
   "Max Brunsfeld <maxbrunsfeld@gmail.com>",
   "Amaan Qureshi <amaanq12@gmail.com>",
 ]

@@ -3,7 +3,7 @@ $(error "Windows is not supported")
 endif
 
 HOMEPAGE_URL := https://github.com/tree-sitter/tree-sitter-arkts
-VERSION := 0.23.2
+VERSION := 0.0.1-beta.0
 
 # repository
 SRC_DIR := src
@@ -57,7 +57,7 @@ ifneq ($(STRIP),)
 endif
 
 $(LANGUAGE_NAME).pc: bindings/c/$(LANGUAGE_NAME).pc.in
-	sed -e 's|@CMAKE_PROJECT_VERSION@|$(VERSION)|' \
+	sed -e 's|@TREE_SITTER_ARKTS_VERSION@|$(VERSION)|' \
 		-e 's|@CMAKE_INSTALL_LIBDIR@|$(LIBDIR:$(PREFIX)/%=%)|' \
 		-e 's|@CMAKE_INSTALL_INCLUDEDIR@|$(INCLUDEDIR:$(PREFIX)/%=%)|' \
 		-e 's|@PROJECT_DESCRIPTION@|$(DESCRIPTION)|' \
