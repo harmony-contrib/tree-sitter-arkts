@@ -3,39 +3,7 @@ name: CI
 on:
   push:
     branches: [master]
-    paths:
-      - "grammar.js"
-      - "common/**"
-      - "src/**"
-      - "bindings/**"
-      - "binding.gyp"
-      - "Cargo.toml"
-      - "go.mod"
-      - "go.sum"
-      - "package.json"
-      - "package-lock.json"
-      - "Package.swift"
-      - "Package.resolved"
-      - "pyproject.toml"
-      - "scripts/**"
-      - "test/**"
   pull_request:
-    paths:
-      - "grammar.js"
-      - "common/**"
-      - "src/**"
-      - "bindings/**"
-      - "binding.gyp"
-      - "Cargo.toml"
-      - "go.mod"
-      - "go.sum"
-      - "package.json"
-      - "package-lock.json"
-      - "Package.swift"
-      - "Package.resolved"
-      - "pyproject.toml"
-      - "scripts/**"
-      - "test/**"
   workflow_dispatch:
 
 concurrency:

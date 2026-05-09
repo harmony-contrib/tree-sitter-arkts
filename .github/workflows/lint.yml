@@ -3,19 +3,7 @@ name: Lint
 on:
   push:
     branches: [master]
-    paths:
-      - common/define-grammar.js
-      - grammar.js
-      - eslint.config.mjs
-      - package.json
-      - package-lock.json
   pull_request:
-    paths:
-      - common/define-grammar.js
-      - grammar.js
-      - eslint.config.mjs
-      - package.json
-      - package-lock.json
   workflow_dispatch:
 
 jobs:

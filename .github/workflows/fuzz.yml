@@ -3,23 +3,7 @@ name: Fuzz Parser
 on:
   push:
     branches: [master]
-    paths:
-      - grammar.js
-      - src/grammar.json
-      - src/parser.c
-      - src/scanner.c
-      - common/scanner.h
-      - scripts/**
-      - test/corpus/**
   pull_request:
-    paths:
-      - grammar.js
-      - src/grammar.json
-      - src/parser.c
-      - src/scanner.c
-      - common/scanner.h
-      - scripts/**
-      - test/corpus/**
   workflow_dispatch:
 
 jobs:
