@@ -46,10 +46,12 @@ jobs:
   test:
     name: Test parsers
     runs-on: ${{matrix.os}}
+    env:
+      npm_config_msvs_version: 2022
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
+        os: [ubuntu-latest, windows-2022, macos-14]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -63,7 +65,7 @@ jobs:
           abi-version: 14
           test-rust: true
           test-node: true
-          node-version: 22
+          node-version: "22.21.1"
           test-python: true
           python-version: "3.12"
           test-go: true

@@ -37,6 +37,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Extract corpus fixtures
         run: node scripts/extract-corpus-fixtures.mjs
+      - name: Configure tree-sitter pkg-config path
+        run: |-
+          prefix="$RUNNER_TOOL_CACHE/tree-sitter/lib"
+          printf 'PKG_CONFIG_PATH=%s/share/pkgconfig:%s/lib/pkgconfig%s\n' \
+            "$prefix" \
+            "$prefix" \
+            "${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" >> "$GITHUB_ENV"
       - name: Fuzz parser with ${{matrix.corpus}} seeds
         uses: tree-sitter/fuzz-action@v4
         with:
