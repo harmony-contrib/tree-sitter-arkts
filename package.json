@@ -29,6 +29,9 @@
     "common/**",
     "*.wasm"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "node-addon-api": "^8.2.2",
     "node-gyp-build": "^4.8.2",

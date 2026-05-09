@@ -123,6 +123,6 @@ jobs:
       - name: Show package contents
         run: npm pack --dry-run
       - name: Publish to npm
-        run: npm publish --provenance
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

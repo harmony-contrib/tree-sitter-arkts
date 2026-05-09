@@ -1,8 +1,6 @@
 # tree-sitter-arkts
 
 [![CI][ci]](https://github.com/tree-sitter/tree-sitter-arkts/actions/workflows/ci.yml)
-[![discord][discord]](https://discord.gg/w7nTvsVJhm)
-[![matrix][matrix]](https://matrix.to/#/#tree-sitter-chat:matrix.org)
 [![crates][crates]](https://crates.io/crates/tree-sitter-arkts)
 [![npm][npm]](https://www.npmjs.com/package/tree-sitter-arkts)
 [![pypi][pypi]](https://pypi.org/project/tree-sitter-arkts)
