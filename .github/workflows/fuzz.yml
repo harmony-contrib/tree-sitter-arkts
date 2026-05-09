@@ -4,14 +4,23 @@ on:
   push:
     branches: [master]
     paths:
-      - typescript/src/scanner.c
-      - tsx/src/scanner.c
+      - grammar.js
+      - src/grammar.json
+      - src/parser.c
+      - src/scanner.c
       - common/scanner.h
+      - scripts/**
+      - test/corpus/**
   pull_request:
     paths:
-      - typescript/src/scanner.c
-      - tsx/src/scanner.c
+      - grammar.js
+      - src/grammar.json
+      - src/parser.c
+      - src/scanner.c
       - common/scanner.h
+      - scripts/**
+      - test/corpus/**
+  workflow_dispatch:
 
 jobs:
   fuzz:
@@ -19,11 +28,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [typescript, tsx]
+        corpus:
+          - arkts
+          - javascript
+          - typescript
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Fuzz ${{matrix.language}} parser
+      - name: Extract corpus fixtures
+        run: node scripts/extract-corpus-fixtures.mjs
+      - name: Fuzz parser with ${{matrix.corpus}} seeds
         uses: tree-sitter/fuzz-action@v4
         with:
-          directory: ${{matrix.language}}
+          directory: .
+          corpus: build/corpus-fixtures/${{matrix.corpus}}
+          tree-sitter-version: v0.24.4

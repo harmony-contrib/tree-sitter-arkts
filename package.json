@@ -44,12 +44,13 @@
   "devDependencies": {
     "eslint": ">=9.14.0",
     "eslint-config-treesitter": "^1.0.2",
-    "tree-sitter-cli": "^0.24.4",
-    "prebuildify": "^6.0.1"
+    "prebuildify": "^6.0.1",
+    "tree-sitter": "^0.21.1",
+    "tree-sitter-cli": "^0.24.4"
   },
   "scripts": {
     "install": "node-gyp-build",
-    "lint": "eslint grammar.js common/define-grammar.js",
+    "lint": "eslint grammar.js common/define-grammar.js scripts/extract-corpus-fixtures.mjs",
     "prestart": "tree-sitter build --wasm",
     "start": "tree-sitter playground",
     "test": "node --test bindings/node/*_test.js"

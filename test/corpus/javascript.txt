@@ -1,0 +1,57 @@
+==================================
+JavaScript modules and callbacks
+==================================
+
+import { value as renamed } from "./mod";
+
+const total = [1, 2, 3]
+  .map((item) => item + renamed)
+  .reduce((sum, item) => sum + item, 0);
+
+export default total;
+
+---
+
+(program
+  (import_statement
+    (import_clause
+      (named_imports
+        (import_specifier
+          name: (identifier)
+          alias: (identifier))))
+    source: (string
+      (string_fragment)))
+  (lexical_declaration
+    (variable_declarator
+      name: (identifier)
+      value: (call_expression
+        function: (member_expression
+          object: (call_expression
+            function: (member_expression
+              object: (array
+                (number)
+                (number)
+                (number))
+              property: (property_identifier))
+            arguments: (arguments
+              (arrow_function
+                parameters: (formal_parameters
+                  (required_parameter
+                    pattern: (identifier)))
+                body: (binary_expression
+                  left: (identifier)
+                  right: (identifier)))))
+          property: (property_identifier))
+        arguments: (arguments
+          (arrow_function
+            parameters: (formal_parameters
+              (required_parameter
+                pattern: (identifier))
+              (required_parameter
+                pattern: (identifier)))
+            body: (binary_expression
+              left: (identifier)
+              right: (identifier)))
+          (number)))))
+  (export_statement
+    value: (identifier)))
