@@ -2,7 +2,7 @@
   "name": "tree-sitter-arkts",
   "version": "0.0.1-beta.0",
   "description": "ArkTS grammar for tree-sitter",
-  "repository": "https://github.com/tree-sitter/tree-sitter-arkts",
+  "repository": "https://github.com/harmony-contrib/tree-sitter-arkts",
   "license": "MIT",
   "author": "richerfu <southorange0929@foxmail.com> Max Brunsfeld <maxbrunsfeld@gmail.com>",
   "maintainers": [
