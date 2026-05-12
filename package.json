@@ -58,6 +58,7 @@
     "release:version": "node scripts/bump-version.mjs",
     "prestart": "tree-sitter build --wasm",
     "start": "tree-sitter playground",
+    "test:hmosworld": "node --test test/hmosworld_parse_test.js",
     "test": "node --test bindings/node/*_test.js"
   }
 }
