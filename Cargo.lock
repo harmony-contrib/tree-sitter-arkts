@@ -82,7 +82,7 @@ dependencies = [
 
 [[package]]
 name = "tree-sitter-arkts"
-version = "0.0.1-beta.0"
+version = "0.1.0"
 dependencies = [
  "cc",
  "tree-sitter",

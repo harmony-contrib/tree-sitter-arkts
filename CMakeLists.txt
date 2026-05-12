@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-arkts
-        VERSION "0.0.1"
+        VERSION "0.1.0"
 		DESCRIPTION "ArkTS grammar for tree-sitter"
         HOMEPAGE_URL "https://github.com/tree-sitter/tree-sitter-arkts"
         LANGUAGES C)
 
-set(TREE_SITTER_ARKTS_VERSION "0.0.1-beta.0")
+set(TREE_SITTER_ARKTS_VERSION "0.1.0")
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(TREE_SITTER_REUSE_ALLOCATOR "Reuse the library allocator" OFF)

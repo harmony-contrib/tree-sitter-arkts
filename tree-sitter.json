@@ -28,7 +28,7 @@
     }
   ],
   "metadata": {
-    "version": "0.0.1-beta.0",
+    "version": "0.1.0",
     "license": "MIT",
     "description": "ArkTS grammar for tree-sitter",
     "authors": [
