@@ -1,0 +1,4 @@
+[submodule "test/fixtures/hmosworld"]
+	path = test/fixtures/hmosworld
+	url = https://gitcode.com/HarmonyOS_Samples/hmosworld.git
+	shallow = true
