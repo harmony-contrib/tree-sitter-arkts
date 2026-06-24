@@ -222,32 +222,30 @@ f
 ---
 
 (program
-  (expression_statement
-    (function_expression
-      (identifier)
-      (formal_parameters)
-      (type_annotation
-        (predefined_type))
-      (statement_block
-        (expression_statement
-          (string
-            (string_fragment)))
-        (expression_statement
-          (string
-            (string_fragment))))))
-  (expression_statement
-    (function_expression
-      (identifier)
-      (formal_parameters)
-      (type_annotation
-        (predefined_type))
-      (statement_block
-        (expression_statement
-          (string
-            (string_fragment)))
-        (expression_statement
-          (string
-            (string_fragment)))))))
+  (function_declaration
+    (identifier)
+    (formal_parameters)
+    (type_annotation
+      (predefined_type))
+    (statement_block
+      (expression_statement
+        (string
+          (string_fragment)))
+      (expression_statement
+        (string
+          (string_fragment)))))
+  (function_declaration
+    (identifier)
+    (formal_parameters)
+    (type_annotation
+      (predefined_type))
+    (statement_block
+      (expression_statement
+        (string
+          (string_fragment)))
+      (expression_statement
+        (string
+          (string_fragment))))))
 
 =======================================
 Array types
@@ -1305,18 +1303,17 @@ function f(x: any): asserts x {
 ---
 
 (program
-  (expression_statement
-    (function_expression
-      (identifier)
-      (formal_parameters
-        (required_parameter
-          (identifier)
-          (type_annotation
-            (predefined_type))))
-      (asserts_annotation
-        (asserts
-          (identifier)))
-      (statement_block))))
+  (function_declaration
+    (identifier)
+    (formal_parameters
+      (required_parameter
+        (identifier)
+        (type_annotation
+          (predefined_type))))
+    (asserts_annotation
+      (asserts
+        (identifier)))
+    (statement_block)))
 
 =======================================
 Assertion functions checking a type
@@ -1336,20 +1333,19 @@ function isT(t: T): t is T {
 ---
 
 (program
-  (expression_statement
-    (function_expression
-      (identifier)
-      (formal_parameters
-        (required_parameter
+  (function_declaration
+    (identifier)
+    (formal_parameters
+      (required_parameter
+        (identifier)
+        (type_annotation
+          (predefined_type))))
+    (asserts_annotation
+      (asserts
+        (type_predicate
           (identifier)
-          (type_annotation
-            (predefined_type))))
-      (asserts_annotation
-        (asserts
-          (type_predicate
-            (identifier)
-            (predefined_type))))
-      (statement_block)))
+          (predefined_type))))
+    (statement_block))
   (class_declaration
     (type_identifier)
     (type_parameters
@@ -1364,21 +1360,20 @@ function isT(t: T): t is T {
             (this)
             (type_identifier)))
         (statement_block))))
-  (expression_statement
-    (function_expression
-      (identifier)
-      (formal_parameters
-        (required_parameter
-          (identifier)
-          (type_annotation
-            (type_identifier))))
-      (type_predicate_annotation
-        (type_predicate
-          (identifier)
-          (type_identifier)))
-      (statement_block
-        (return_statement
-          (true))))))
+  (function_declaration
+    (identifier)
+    (formal_parameters
+      (required_parameter
+        (identifier)
+        (type_annotation
+          (type_identifier))))
+    (type_predicate_annotation
+      (type_predicate
+        (identifier)
+        (type_identifier)))
+    (statement_block
+      (return_statement
+        (true)))))
 
 =======================================
 Type of an assertion function
@@ -1432,32 +1427,30 @@ function isFish(object: Fish): object is Fish {
 ---
 
 (program
-  (expression_statement
-    (function_expression
-      (identifier)
-      (formal_parameters
-        (required_parameter
-          (identifier)
-          (type_annotation
-            (type_identifier))))
-      (type_predicate_annotation
-        (type_predicate
-          (identifier)
-          (type_identifier)))
-      (statement_block)))
-  (expression_statement
-    (function_expression
-      (identifier)
-      (formal_parameters
-        (required_parameter
-          (identifier)
-          (type_annotation
-            (type_identifier))))
-      (type_predicate_annotation
-        (type_predicate
-          (identifier)
-          (type_identifier)))
-      (statement_block))))
+  (function_declaration
+    (identifier)
+    (formal_parameters
+      (required_parameter
+        (identifier)
+        (type_annotation
+          (type_identifier))))
+    (type_predicate_annotation
+      (type_predicate
+        (identifier)
+        (type_identifier)))
+    (statement_block))
+  (function_declaration
+    (identifier)
+    (formal_parameters
+      (required_parameter
+        (identifier)
+        (type_annotation
+          (type_identifier))))
+    (type_predicate_annotation
+      (type_predicate
+        (identifier)
+        (type_identifier)))
+    (statement_block)))
 
 ==================================
 Read-only arrays

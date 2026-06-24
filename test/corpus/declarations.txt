@@ -313,7 +313,7 @@ export async function readFile(filename: string): Promise<Buffer>
 
 (program
   (export_statement
-    (function_expression
+    (function_declaration
       (identifier)
       (formal_parameters
         (required_parameter

@@ -50,6 +50,9 @@ test('can parse every ETS file in the hmosworld fixture', () => {
     try {
       const tree = parser.parse(source);
       assert.ok(tree.rootNode, `${relativePath} did not produce a syntax tree`);
+      if (tree.rootNode.hasError) {
+        failures.push(`${relativePath}: produced ERROR nodes`);
+      }
     } catch (error) {
       failures.push(`${relativePath}: ${error.message}`);
     }
