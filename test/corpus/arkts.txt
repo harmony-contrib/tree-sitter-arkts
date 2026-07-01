@@ -58,7 +58,7 @@ export default struct HelloWorld {
                 (arguments)
                 (arkui_children
                   (expression_statement
-                    (call_expression
+                    (arkui_component_expression
                       (identifier)
                       (arguments
                         (string
@@ -95,24 +95,147 @@ Annotation declaration
 ArkUI component expression
 ==================================
 
-Column() {
-  Text("Hello")
+@Builder
+function test() {
+  abc() {
+    Text("Hello")
+  }
 }
 
 ---
 
 (program
-  (expression_statement
-    (arkui_component_expression
+  (function_declaration
+    (decorator
+      (identifier))
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (expression_statement
+        (arkui_component_expression
+          (identifier)
+          (arguments)
+          (arkui_children
+            (expression_statement
+              (arkui_component_expression
+                (identifier)
+                (arguments
+                  (string
+                    (string_fragment)))))))))))
+
+==================================
+Exported ArkUI builder function
+==================================
+
+@Builder
+export function test() {
+  abc() {
+    Text("Hello")
+  }
+}
+
+---
+
+(program
+  (export_statement
+    (decorator
+      (identifier))
+    (function_declaration
       (identifier)
-      (arguments)
-      (arkui_children
+      (formal_parameters)
+      (statement_block
+        (expression_statement
+          (arkui_component_expression
+            (identifier)
+            (arguments)
+            (arkui_children
+              (expression_statement
+                (arkui_component_expression
+                  (identifier)
+                  (arguments
+                    (string
+                      (string_fragment))))))))))))
+
+==================================
+Plain call followed by block
+==================================
+
+function test() {
+  foo()
+  {
+    bar()
+  }
+}
+
+---
+
+(program
+  (function_declaration
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments)))
+      (statement_block
         (expression_statement
           (call_expression
             (identifier)
-            (arguments
-              (string
-                (string_fragment)))))))))
+            (arguments)))))))
+
+==================================
+Plain assignment followed by block
+==================================
+
+function test() {
+  MPPerformance.loadBundleHitCache = false
+  {
+    hit: false
+  }
+}
+
+---
+
+(program
+  (function_declaration
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (expression_statement
+        (assignment_expression
+          (member_expression
+            (identifier)
+            (property_identifier))
+          (false)))
+      (expression_statement
+        (object
+          (pair
+            (property_identifier)
+            (false)))))))
+
+==================================
+Return before object block
+==================================
+
+function test() {
+  return
+  { value: 1 }
+}
+
+---
+
+(program
+  (function_declaration
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (return_statement)
+      (expression_statement
+        (object
+          (pair
+            (property_identifier)
+            (number)))))))
 
 ==================================
 Extend function with leading dot chain
@@ -141,18 +264,18 @@ function fancy(fontSize: number) {
           (predefined_type))))
     (statement_block
       (expression_statement
-        (call_expression
-          (member_expression
-            (call_expression
-              (leading_dot_expression
-                (identifier))
-              (arguments
-                (member_expression
-                  (identifier)
-                  (property_identifier))))
-            (property_identifier))
-          (arguments
-            (identifier)))))))
+        (leading_dot_expression
+          (call_expression
+            (member_expression
+              (call_expression
+                (identifier)
+                (arguments
+                  (member_expression
+                    (identifier)
+                    (property_identifier))))
+              (property_identifier))
+            (arguments
+              (identifier))))))))
 
 ==================================
 Lazy import

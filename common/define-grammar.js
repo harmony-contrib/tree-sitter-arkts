@@ -123,6 +123,34 @@ module.exports = grammar(JavaScript, {
     [$.decorator, $.decorator_member_expression],
     [$.export_statement],
     [$.struct_declaration],
+    [$.object, $._arkui_statement_block],
+    [$.statement_block, $._arkui_statement_block],
+    [$.statement_block, $.object, $._arkui_statement_block],
+    [$.statement, $._arkui_statement],
+    [$.declaration, $._arkui_non_arrow_expression],
+    [$.declaration, $.expression, $._arkui_non_arrow_expression],
+    [$.object, $.object_pattern, $._arkui_primary_expression],
+    [$.primary_expression, $._arkui_primary_expression],
+    [$.primary_expression, $._property_name, $._arkui_primary_expression],
+    [$.export_statement, $._arkui_primary_expression],
+    [$.primary_expression, $._arkui_primary_expression, $.arkui_component_expression],
+    [$.primary_expression, $._property_name, $._arkui_primary_expression, $.arkui_component_expression],
+    [$.primary_expression, $.function_expression, $.generator_function],
+    [$.arkui_component_expression],
+    [$.call_expression, $._arkui_non_arrow_expression],
+    [$.expression, $._arkui_non_arrow_expression],
+    [$.return_statement, $._arkui_return_statement],
+    [$.throw_statement, $._arkui_throw_statement],
+    [$.switch_body, $._arkui_switch_body],
+    [$.switch_case, $._arkui_switch_case],
+    [$.switch_default, $._arkui_switch_default],
+    [$.return_statement, $.sequence_expression, $._arkui_expression],
+    [$.throw_statement, $.sequence_expression, $._arkui_expression],
+    [$.sequence_expression, $._arkui_expression],
+    [$.expression_statement, $.sequence_expression, $._arkui_expression],
+    [$.primary_expression, $.arrow_function, $._arkui_arrow_function],
+    [$.primary_expression, $.arrow_function, $._property_name, $._arkui_arrow_function],
+    [$.arrow_function, $._arkui_expression],
     [$._property_name, $.public_field_definition],
     [$._property_name, $.annotation_property_definition],
     [$._property_name, $.accessibility_modifier],
@@ -132,7 +160,15 @@ module.exports = grammar(JavaScript, {
     [$.method_definition, $._property_name, $.public_field_definition],
     [$.method_definition, $._property_name, $.public_field_definition, $.method_signature],
     [$.method_definition, $._property_name, $.public_field_definition, $.method_signature, $.index_signature],
+    [$.method_definition, $._property_name, $.public_field_definition, $.method_signature, $._arkui_struct_lifecycle_method_definition],
+    [$.method_definition, $._property_name, $.public_field_definition, $._arkui_struct_lifecycle_method_definition],
     [$.method_definition, $._property_name, $.method_signature],
+    [$.method_definition, $._property_name, $.method_signature, $._arkui_method_definition],
+    [$.method_definition, $._property_name, $.method_signature, $._arkui_struct_lifecycle_method_definition],
+    [$.method_definition, $._property_name, $._arkui_struct_lifecycle_method_definition],
+    [$._property_name, $._arkui_struct_lifecycle_method_definition],
+    [$._property_name, $._arkui_labeled_statement],
+    [$.labeled_statement, $._property_name, $._arkui_labeled_statement],
     [$.primary_type, $.type_parameter],
   ]),
 
@@ -225,12 +261,12 @@ module.exports = grammar(JavaScript, {
     primary_expression: ($, previous) => choice(
       previous,
       $.non_null_expression,
-      $.arkui_component_expression,
-      $.leading_dot_expression,
     ),
 
     // ArkTS inherits from JavaScript and reuses the TypeScript expression
-    // surface while excluding JSX-only forms.
+    // surface while excluding JSX-only forms. ArkUI component DSL expressions
+    // are intentionally not part of the global expression surface; they are
+    // only accepted inside ArkUI DSL statement blocks.
     expression: ($, previous) => {
       const choices = [
         $.as_expression,
@@ -332,6 +368,14 @@ module.exports = grammar(JavaScript, {
     },
 
     export_statement: ($, previous) => choice(
+      prec.right('declaration', seq(
+        repeat(field('decorator', $.decorator)),
+        field('decorator', alias($.arkui_dsl_decorator, $.decorator)),
+        repeat(field('decorator', $.decorator)),
+        'export',
+        optional('default'),
+        field('declaration', alias($._arkui_export_function_declaration, $.function_declaration)),
+      )),
       prec.right(seq(
         repeat1(field('decorator', $.decorator)),
         previous,
@@ -402,6 +446,243 @@ module.exports = grammar(JavaScript, {
       ')',
     ),
 
+    _arkui_statement_block: $ => prec.right(seq(
+      '{',
+      repeat($._arkui_statement),
+      '}',
+      optional($._automatic_semicolon),
+    )),
+
+    _arkui_statement: $ => choice(
+      $.export_statement,
+      $.import_statement,
+      $.debugger_statement,
+      alias($.arkui_expression_statement, $.expression_statement),
+      $.declaration,
+      alias($._arkui_statement_block, $.statement_block),
+      alias($._arkui_if_statement, $.if_statement),
+      alias($._arkui_switch_statement, $.switch_statement),
+      alias($._arkui_for_statement, $.for_statement),
+      alias($._arkui_for_in_statement, $.for_in_statement),
+      alias($._arkui_while_statement, $.while_statement),
+      alias($._arkui_do_statement, $.do_statement),
+      alias($._arkui_try_statement, $.try_statement),
+      alias($._arkui_with_statement, $.with_statement),
+      $.break_statement,
+      $.continue_statement,
+      alias($._arkui_return_statement, $.return_statement),
+      alias($._arkui_throw_statement, $.throw_statement),
+      $.empty_statement,
+      alias($._arkui_labeled_statement, $.labeled_statement),
+    ),
+
+    arkui_expression_statement: $ => prec.right(seq(
+      $._arkui_expressions,
+      optional(';'),
+    )),
+
+    _arkui_expressions: $ => choice(
+      $._arkui_expression,
+      alias($._arkui_sequence_expression, $.sequence_expression),
+    ),
+
+    _arkui_sequence_expression: $ => prec.right(seq(
+      $._arkui_expression,
+      repeat1(seq(',', $._arkui_expression)),
+    )),
+
+    _arkui_expression: $ => choice(
+      $.arkui_component_expression,
+      $.leading_dot_expression,
+      alias($._arkui_arrow_function, $.arrow_function),
+      $._arkui_non_arrow_expression,
+    ),
+
+    _arkui_argument_expression: $ => choice(
+      alias($._arkui_arrow_function, $.arrow_function),
+      $._arkui_non_arrow_expression,
+    ),
+
+    _arkui_non_arrow_expression: $ => choice(
+      $._arkui_primary_expression,
+      $.assignment_expression,
+      $.augmented_assignment_expression,
+      $.await_expression,
+      $.unary_expression,
+      $.binary_expression,
+      $.ternary_expression,
+      $.update_expression,
+      $.new_expression,
+      $.yield_expression,
+      $.as_expression,
+      $.satisfies_expression,
+      $.instantiation_expression,
+      $.internal_module,
+      $.type_assertion,
+    ),
+
+    _arkui_primary_expression: $ => choice(
+      $.subscript_expression,
+      $.member_expression,
+      $.parenthesized_expression,
+      $._identifier,
+      $.this,
+      $.super,
+      $.number,
+      $.string,
+      $.template_string,
+      $.regex,
+      $.true,
+      $.false,
+      $.null,
+      $.object,
+      $.array,
+      $.function_expression,
+      $.generator_function,
+      $.class,
+      $.meta_property,
+      $.call_expression,
+      $.non_null_expression,
+    ),
+
+    _arkui_arrow_function: $ => seq(
+      optional('async'),
+      choice(
+        field('parameter', choice(
+          alias($._reserved_identifier, $.identifier),
+          $.identifier,
+        )),
+        $._call_signature,
+      ),
+      '=>',
+      field('body', choice(
+        $._arkui_expression,
+        alias($._arkui_statement_block, $.statement_block),
+      )),
+    ),
+
+    _arkui_if_statement: $ => prec.right(seq(
+      'if',
+      field('condition', $.parenthesized_expression),
+      field('consequence', $._arkui_statement),
+      optional(field('alternative', alias($._arkui_else_clause, $.else_clause))),
+    )),
+
+    _arkui_else_clause: $ => seq('else', $._arkui_statement),
+
+    _arkui_switch_statement: $ => seq(
+      'switch',
+      field('value', $.parenthesized_expression),
+      field('body', alias($._arkui_switch_body, $.switch_body)),
+    ),
+
+    _arkui_switch_body: $ => seq(
+      '{',
+      repeat(choice(
+        alias($._arkui_switch_case, $.switch_case),
+        alias($._arkui_switch_default, $.switch_default),
+      )),
+      '}',
+    ),
+
+    _arkui_switch_case: $ => seq(
+      'case',
+      field('value', $._arkui_expressions),
+      ':',
+      field('body', repeat($._arkui_statement)),
+    ),
+
+    _arkui_switch_default: $ => seq(
+      'default',
+      ':',
+      field('body', repeat($._arkui_statement)),
+    ),
+
+    _arkui_for_statement: $ => seq(
+      'for',
+      '(',
+      choice(
+        field('initializer', choice($.lexical_declaration, $.variable_declaration)),
+        seq(field('initializer', $._arkui_expressions), ';'),
+        field('initializer', $.empty_statement),
+      ),
+      field('condition', choice(
+        seq($._arkui_expressions, ';'),
+        $.empty_statement,
+      )),
+      field('increment', optional($._arkui_expressions)),
+      ')',
+      field('body', $._arkui_statement),
+    ),
+
+    _arkui_for_in_statement: $ => seq(
+      'for',
+      optional('await'),
+      $._for_header,
+      field('body', $._arkui_statement),
+    ),
+
+    _arkui_while_statement: $ => seq(
+      'while',
+      field('condition', $.parenthesized_expression),
+      field('body', $._arkui_statement),
+    ),
+
+    _arkui_do_statement: $ => prec.right(seq(
+      'do',
+      field('body', $._arkui_statement),
+      'while',
+      field('condition', $.parenthesized_expression),
+      optional($._semicolon),
+    )),
+
+    _arkui_try_statement: $ => seq(
+      'try',
+      field('body', alias($._arkui_statement_block, $.statement_block)),
+      optional(field('handler', alias($._arkui_catch_clause, $.catch_clause))),
+      optional(field('finalizer', alias($._arkui_finally_clause, $.finally_clause))),
+    ),
+
+    _arkui_catch_clause: $ => seq(
+      'catch',
+      optional(seq(
+        '(',
+        field('parameter', choice($.identifier, $._destructuring_pattern)),
+        optional(field('type', $.type_annotation)),
+        ')',
+      )),
+      field('body', alias($._arkui_statement_block, $.statement_block)),
+    ),
+
+    _arkui_finally_clause: $ => seq(
+      'finally',
+      field('body', alias($._arkui_statement_block, $.statement_block)),
+    ),
+
+    _arkui_with_statement: $ => seq(
+      'with',
+      field('object', $.parenthesized_expression),
+      field('body', $._arkui_statement),
+    ),
+
+    _arkui_return_statement: $ => seq(
+      'return',
+      optional($._arkui_expressions),
+      $._semicolon,
+    ),
+
+    _arkui_throw_statement: $ => seq(
+      'throw',
+      $._arkui_expressions,
+      $._semicolon,
+    ),
+
+    _arkui_labeled_statement: $ => prec.dynamic(-1, seq(
+      field('label', alias(choice($.identifier, $._reserved_identifier), $.statement_identifier)),
+      ':',
+      field('body', $._arkui_statement),
+    )),
+
     _formal_parameter: $ => choice(
       $.required_parameter,
       $.optional_parameter,
@@ -415,9 +696,34 @@ module.exports = grammar(JavaScript, {
       choice($._semicolon, $._function_signature_automatic_semicolon),
     ),
 
-    function_declaration: ($, previous) => prec.right('declaration', seq(
-      repeat1(field('decorator', $.decorator)),
+    function_declaration: ($, previous) => choice(
+      $._arkui_function_declaration,
       previous,
+      prec.right('declaration', seq(
+        repeat1(field('decorator', $.decorator)),
+        previous,
+      )),
+    ),
+
+    _arkui_function_declaration: $ => prec.right('declaration', seq(
+      repeat(field('decorator', $.decorator)),
+      field('decorator', alias($.arkui_dsl_decorator, $.decorator)),
+      repeat(field('decorator', $.decorator)),
+      optional('async'),
+      'function',
+      field('name', $.identifier),
+      $._call_signature,
+      field('body', alias($._arkui_statement_block, $.statement_block)),
+      optional($._automatic_semicolon),
+    )),
+
+    _arkui_export_function_declaration: $ => prec.right('declaration', seq(
+      optional('async'),
+      'function',
+      field('name', $.identifier),
+      $._call_signature,
+      field('body', alias($._arkui_statement_block, $.statement_block)),
+      optional($._automatic_semicolon),
     )),
 
     decorator: $ => seq(
@@ -429,6 +735,49 @@ module.exports = grammar(JavaScript, {
         alias($.decorator_parenthesized_expression, $.parenthesized_expression),
       ),
     ),
+
+    arkui_dsl_decorator: $ => seq(
+      '@',
+      choice(
+        alias(choice(
+          'Builder',
+          'LocalBuilder',
+          'Styles',
+        ), $.identifier),
+        alias($.arkui_dsl_decorator_call_expression, $.call_expression),
+        alias($.arkui_dsl_decorator_member_expression, $.member_expression),
+      ),
+    ),
+
+    arkui_dsl_decorator_call_expression: $ => prec('call', seq(
+      field('function', choice(
+        alias(choice(
+          'Builder',
+          'LocalBuilder',
+          'Extend',
+          'AnimatableExtend',
+          'Styles',
+        ), $.identifier),
+        $.arkui_dsl_decorator_member_expression,
+      )),
+      optional(field('type_arguments', $.type_arguments)),
+      field('arguments', $.arguments),
+    )),
+
+    arkui_dsl_decorator_member_expression: $ => prec('member', seq(
+      field('object', choice(
+        $.identifier,
+        alias($.arkui_dsl_decorator_member_expression, $.member_expression),
+      )),
+      '.',
+      field('property', alias(choice(
+        'Builder',
+        'LocalBuilder',
+        'Extend',
+        'AnimatableExtend',
+        'Styles',
+      ), $.property_identifier)),
+    )),
 
     decorator_call_expression: $ => prec('call', seq(
       field('function', choice(
@@ -471,30 +820,59 @@ module.exports = grammar(JavaScript, {
       )),
     )),
 
+    arkui_arguments: $ => seq(
+      '(',
+      commaSep(choice(
+        $.spread_element,
+        $._arkui_argument_expression,
+      )),
+      ')',
+    ),
+
     arkui_children: $ => seq(
       '{',
-      repeat($.statement),
+      repeat($._arkui_statement),
       '}',
     ),
 
-    arkui_component_expression: $ => prec('call', seq(
-      field('function', choice(
-        $.identifier,
-        $.this,
-        $.super,
-        $.member_expression,
-        $.subscript_expression,
-        $.call_expression,
-        $.new_expression,
-        $.parenthesized_expression,
-        $.non_null_expression,
-        $.meta_property,
-        $.import,
+    arkui_component_expression: $ => choice(
+      prec.dynamic(1, prec('call', seq(
+        field('function', $.identifier),
+        field('type_arguments', optional($.type_arguments)),
+        field('arguments', alias($.arkui_arguments, $.arguments)),
+        field('children', $.arkui_children),
+        repeat($._arkui_component_chain),
+      ))),
+      prec('call', seq(
+        field('function', $.identifier),
+        field('type_arguments', optional($.type_arguments)),
+        field('arguments', alias($.arkui_arguments, $.arguments)),
+        repeat($._arkui_component_chain),
       )),
-      field('type_arguments', optional($.type_arguments)),
-      field('arguments', $.arguments),
-      field('children', $.arkui_children),
-    )),
+      prec.dynamic(1, prec('call', seq(
+        field('function', choice(
+          $.this,
+          $.super,
+          $.member_expression,
+          $.subscript_expression,
+          $.call_expression,
+          $.new_expression,
+          $.parenthesized_expression,
+          $.non_null_expression,
+          $.meta_property,
+        )),
+        field('type_arguments', optional($.type_arguments)),
+        field('arguments', alias($.arkui_arguments, $.arguments)),
+        field('children', $.arkui_children),
+        repeat($._arkui_component_chain),
+      ))),
+    ),
+
+    _arkui_component_chain: $ => seq(
+      '.',
+      field('property', alias($.identifier, $.property_identifier)),
+      field('arguments', alias($.arkui_arguments, $.arguments)),
+    ),
 
     annotation_property_definition: $ => seq(
       repeat(field('decorator', $.decorator)),
@@ -529,6 +907,13 @@ module.exports = grammar(JavaScript, {
       repeat(choice(
         seq(
           repeat(field('decorator', $.decorator)),
+          field('decorator', alias($.arkui_dsl_decorator, $.decorator)),
+          repeat(field('decorator', $.decorator)),
+          alias($._arkui_method_definition, $.method_definition),
+          optional($._semicolon),
+        ),
+        seq(
+          repeat(field('decorator', $.decorator)),
           $.method_definition,
           optional($._semicolon),
         ),
@@ -559,6 +944,18 @@ module.exports = grammar(JavaScript, {
     struct_body: $ => seq(
       '{',
       repeat(choice(
+        seq(
+          repeat(field('decorator', $.decorator)),
+          field('decorator', alias($.arkui_dsl_decorator, $.decorator)),
+          repeat(field('decorator', $.decorator)),
+          alias($._arkui_method_definition, $.method_definition),
+          optional($._semicolon),
+        ),
+        seq(
+          repeat(field('decorator', $.decorator)),
+          alias($._arkui_struct_lifecycle_method_definition, $.method_definition),
+          optional($._semicolon),
+        ),
         seq(
           repeat(field('decorator', $.decorator)),
           $.method_definition,
@@ -601,6 +998,37 @@ module.exports = grammar(JavaScript, {
       $._call_signature,
       field('body', $.statement_block),
     )),
+
+    _arkui_method_definition: $ => prec.left(seq(
+      optional($.accessibility_modifier),
+      optional('static'),
+      optional($.override_modifier),
+      optional('readonly'),
+      optional('async'),
+      optional(choice('get', 'set', '*')),
+      field('name', $._property_name),
+      optional('?'),
+      $._call_signature,
+      field('body', alias($._arkui_statement_block, $.statement_block)),
+    )),
+
+    _arkui_struct_lifecycle_method_definition: $ => prec.left(seq(
+      optional($.accessibility_modifier),
+      optional('static'),
+      optional($.override_modifier),
+      optional('readonly'),
+      optional('async'),
+      optional(choice('get', 'set', '*')),
+      field('name', alias(choice('build', 'pageTransition'), $.property_identifier)),
+      optional('?'),
+      $._call_signature,
+      field('body', alias($._arkui_statement_block, $.statement_block)),
+    )),
+
+    _property_name: ($, previous) => choice(
+      previous,
+      alias(choice('build', 'pageTransition'), $.property_identifier),
+    ),
 
     declaration: ($, previous) => choice(
       previous,
@@ -668,19 +1096,7 @@ module.exports = grammar(JavaScript, {
       commaSep1($.type),
     ),
 
-    object: ($, previous) => choice(
-      previous,
-      prec('object', seq(
-        '{',
-        $.leading_dot_expression,
-        repeat(choice(
-          $.leading_dot_expression,
-          seq(choice(',', ';'), $.leading_dot_expression),
-        )),
-        optional(choice(',', ';')),
-        '}',
-      )),
-    ),
+    object: (_, previous) => previous,
 
     ambient_declaration: $ => seq(
       'declare',
