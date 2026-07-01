@@ -94,11 +94,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          cache: npm
           node-version: ${{env.NODE_VERSION}}
+          package-manager-cache: false
           registry-url: https://registry.npmjs.org/
+      - name: Set up npm for trusted publishing
+        run: |
+          npm install -g npm@11
+          npm --version
       - name: Sync release version
         run: npm run release:version -- "$RELEASE_VERSION"
         shell: bash
@@ -124,8 +128,6 @@ jobs:
         run: npm pack --dry-run
       - name: Publish to npm
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
   publish-crate:
     name: Publish Rust crate
