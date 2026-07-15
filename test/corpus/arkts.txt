@@ -317,3 +317,52 @@ struct A {
         (type_annotation
           (predefined_type))
         (statement_block)))))
+
+==================================
+Consecutive builder calls in ArkUI DSL block
+==================================
+
+@Component
+struct V {
+  build() {
+    Column() {
+      this.a('one')
+      this.b('two', true)
+    }
+  }
+}
+
+---
+
+(program
+  (struct_declaration
+    decorator: (decorator
+      (identifier))
+    name: (type_identifier)
+    body: (struct_body
+      (method_definition
+        name: (property_identifier)
+        parameters: (formal_parameters)
+        body: (statement_block
+          (expression_statement
+            (arkui_component_expression
+              function: (identifier)
+              arguments: (arguments)
+              children: (arkui_children
+                (expression_statement
+                  (call_expression
+                    function: (member_expression
+                      object: (this)
+                      property: (property_identifier))
+                    arguments: (arguments
+                      (string
+                        (string_fragment)))))
+                (expression_statement
+                  (call_expression
+                    function: (member_expression
+                      object: (this)
+                      property: (property_identifier))
+                    arguments: (arguments
+                      (string
+                        (string_fragment))
+                      (true))))))))))))

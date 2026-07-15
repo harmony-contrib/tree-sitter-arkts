@@ -478,7 +478,7 @@ module.exports = grammar(JavaScript, {
 
     arkui_expression_statement: $ => prec.right(seq(
       $._arkui_expressions,
-      optional(';'),
+      $._semicolon,
     )),
 
     _arkui_expressions: $ => choice(
