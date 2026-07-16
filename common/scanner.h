@@ -1,5 +1,6 @@
 #include "tree_sitter/parser.h"
 
+#include <string.h>
 #include <wctype.h>
 
 enum TokenType {
@@ -13,6 +14,8 @@ enum TokenType {
     JSX_TEXT,
     FUNCTION_SIGNATURE_AUTOMATIC_SEMICOLON,
     ERROR_RECOVERY,
+    ANNOTATION_IDENTIFIER,
+    DECORATOR_END,
 };
 
 static void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
@@ -314,7 +317,186 @@ static bool scan_jsx_text(TSLexer *lexer) {
     return saw_text;
 }
 
+static bool is_identifier_delimiter(int32_t character) {
+    if (character == 0 || character < 0x20 || iswspace(character)) {
+        return true;
+    }
+
+    switch (character) {
+        case ':':
+        case ';':
+        case '`':
+        case '"':
+        case '\'':
+        case '@':
+        case '#':
+        case '.':
+        case ',':
+        case '|':
+        case '^':
+        case '&':
+        case '<':
+        case '>':
+        case '=':
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+        case '\\':
+        case '%':
+        case '?':
+        case '!':
+        case '~':
+        case '(':
+        case ')':
+        case '[':
+        case ']':
+        case '{':
+        case '}':
+        case 0xFEFF:
+        case 0x2060:
+        case 0x200B:
+        case 0x2028:
+        case 0x2029:
+            return true;
+        default:
+            return false;
+    }
+}
+
+static bool scan_identifier_escape(TSLexer *lexer) {
+    advance(lexer);
+    if (lexer->lookahead != 'u') {
+        return false;
+    }
+
+    advance(lexer);
+    if (lexer->lookahead == '{') {
+        advance(lexer);
+        bool has_digit = false;
+        while (iswxdigit(lexer->lookahead)) {
+            has_digit = true;
+            advance(lexer);
+        }
+        if (!has_digit || lexer->lookahead != '}') {
+            return false;
+        }
+        advance(lexer);
+        return true;
+    }
+
+    for (unsigned i = 0; i < 4; i++) {
+        if (!iswxdigit(lexer->lookahead)) {
+            return false;
+        }
+        advance(lexer);
+    }
+    return true;
+}
+
+static bool is_annotation_keyword(const char *text) {
+    static const char *keywords[] = {
+        "break",     "case",       "catch",      "class",      "struct",     "const",
+        "continue",  "debugger",   "default",    "delete",     "do",         "else",
+        "enum",      "export",     "extends",    "false",      "finally",    "for",
+        "function",  "if",         "import",     "in",         "instanceof", "new",
+        "null",      "return",     "super",      "switch",     "this",       "throw",
+        "true",      "try",        "typeof",     "var",        "void",       "while",
+        "with",      "implements", "interface",  "let",        "package",    "private",
+        "protected", "public",     "static",     "yield",      "abstract",   "accessor",
+        "as",        "asserts",    "assert",     "any",        "async",      "await",
+        "boolean",   "constructor", "declare",    "get",        "infer",      "intrinsic",
+        "is",        "keyof",      "module",     "namespace",  "never",      "out",
+        "readonly",  "require",    "number",     "object",     "satisfies",  "set",
+        "string",    "symbol",     "type",       "lazy",       "undefined",  "unique",
+        "unknown",   "from",       "global",     "bigint",     "override",   "of",
+    };
+
+    for (unsigned i = 0; i < sizeof(keywords) / sizeof(keywords[0]); i++) {
+        if (strcmp(text, keywords[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool scan_annotation_identifier(TSLexer *lexer) {
+    char text[16] = {0};
+    unsigned length = 0;
+    bool can_be_keyword = true;
+    bool scanned_comment = false;
+
+    if (!scan_whitespace_and_comments(lexer, &scanned_comment)) {
+        return false;
+    }
+
+    if (lexer->lookahead == '\\') {
+        can_be_keyword = false;
+        if (!scan_identifier_escape(lexer)) {
+            return false;
+        }
+    } else {
+        if (is_identifier_delimiter(lexer->lookahead) ||
+            (lexer->lookahead >= '0' && lexer->lookahead <= '9')) {
+            return false;
+        }
+        if (lexer->lookahead < 0x80 && length + 1 < sizeof(text)) {
+            text[length++] = (char)lexer->lookahead;
+        } else {
+            can_be_keyword = false;
+        }
+        advance(lexer);
+    }
+
+    while (lexer->lookahead == '\\' || !is_identifier_delimiter(lexer->lookahead)) {
+        if (lexer->lookahead == '\\') {
+            can_be_keyword = false;
+            if (!scan_identifier_escape(lexer)) {
+                return false;
+            }
+            continue;
+        }
+
+        if (lexer->lookahead < 0x80 && length + 1 < sizeof(text)) {
+            text[length++] = (char)lexer->lookahead;
+        } else {
+            can_be_keyword = false;
+        }
+        advance(lexer);
+    }
+
+    if (can_be_keyword && is_annotation_keyword(text)) {
+        return false;
+    }
+
+    lexer->mark_end(lexer);
+    lexer->result_symbol = ANNOTATION_IDENTIFIER;
+    return true;
+}
+
+static bool scan_decorator_end(TSLexer *lexer) {
+    lexer->mark_end(lexer);
+    bool scanned_comment = false;
+    if (!scan_whitespace_and_comments(lexer, &scanned_comment)) {
+        return false;
+    }
+    if (lexer->lookahead == '(' || lexer->lookahead == '.' || lexer->lookahead == '<') {
+        return false;
+    }
+
+    lexer->result_symbol = DECORATOR_END;
+    return true;
+}
+
 static inline bool external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
+    if (valid_symbols[ANNOTATION_IDENTIFIER]) {
+        return scan_annotation_identifier(lexer);
+    }
+
+    if (valid_symbols[DECORATOR_END]) {
+        return scan_decorator_end(lexer);
+    }
+
     if (valid_symbols[TEMPLATE_CHARS]) {
         if (valid_symbols[AUTOMATIC_SEMICOLON]) {
             return false;

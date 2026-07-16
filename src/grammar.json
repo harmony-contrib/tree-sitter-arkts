@@ -22,8 +22,35 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "statement"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "statement"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "annotation_declaration"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_ambient_annotation_declaration"
+                },
+                "named": true,
+                "value": "ambient_declaration"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_export_annotation_declaration"
+                },
+                "named": true,
+                "value": "export_statement"
+              }
+            ]
           }
         }
       ]
@@ -701,10 +728,6 @@
         {
           "type": "SYMBOL",
           "name": "struct_declaration"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "annotation_declaration"
         },
         {
           "type": "SYMBOL",
@@ -6789,45 +6812,99 @@
       ]
     },
     "decorator": {
-      "type": "SEQ",
+      "type": "CHOICE",
       "members": [
         {
-          "type": "STRING",
-          "value": "@"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "@"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "arkui_non_dsl_decorator_call_expression"
+                  },
+                  "named": true,
+                  "value": "call_expression"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": "Extend"
+                          },
+                          {
+                            "type": "STRING",
+                            "value": "AnimatableExtend"
+                          }
+                        ]
+                      },
+                      "named": true,
+                      "value": "identifier"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_decorator_end"
+                    }
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "decorator_member_expression"
+                  },
+                  "named": true,
+                  "value": "member_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "decorator_call_expression"
+                  },
+                  "named": true,
+                  "value": "call_expression"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "decorator_parenthesized_expression"
+                  },
+                  "named": true,
+                  "value": "parenthesized_expression"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "CHOICE",
+          "type": "SEQ",
           "members": [
             {
               "type": "SYMBOL",
-              "name": "identifier"
+              "name": "_annotation_marker"
             },
             {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "decorator_member_expression"
-              },
-              "named": true,
-              "value": "member_expression"
-            },
-            {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "decorator_call_expression"
-              },
-              "named": true,
-              "value": "call_expression"
-            },
-            {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "decorator_parenthesized_expression"
-              },
-              "named": true,
-              "value": "parenthesized_expression"
+              "type": "SYMBOL",
+              "name": "__error_recovery"
             }
           ]
         }
@@ -8676,6 +8753,15 @@
           "name": "object"
         },
         {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_arkui_object"
+          },
+          "named": true,
+          "value": "object"
+        },
+        {
           "type": "SYMBOL",
           "name": "array"
         },
@@ -9672,6 +9758,98 @@
           "type": "CHOICE",
           "members": [
             {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "Builder"
+                      },
+                      {
+                        "type": "STRING",
+                        "value": "LocalBuilder"
+                      },
+                      {
+                        "type": "STRING",
+                        "value": "Styles"
+                      }
+                    ]
+                  },
+                  "named": true,
+                  "value": "identifier"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_decorator_end"
+                }
+              ]
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "arkui_dsl_decorator_call_expression"
+              },
+              "named": true,
+              "value": "call_expression"
+            }
+          ]
+        }
+      ]
+    },
+    "arkui_dsl_decorator_call_expression": {
+      "type": "PREC",
+      "value": "call",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "function",
+            "content": {
+              "type": "ALIAS",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "Extend"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "AnimatableExtend"
+                  }
+                ]
+              },
+              "named": true,
+              "value": "identifier"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "arguments",
+            "content": {
+              "type": "SYMBOL",
+              "name": "arguments"
+            }
+          }
+        ]
+      }
+    },
+    "arkui_non_dsl_decorator_call_expression": {
+      "type": "PREC",
+      "value": "call",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "function",
+            "content": {
               "type": "ALIAS",
               "content": {
                 "type": "CHOICE",
@@ -9692,93 +9870,7 @@
               },
               "named": true,
               "value": "identifier"
-            },
-            {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "arkui_dsl_decorator_call_expression"
-              },
-              "named": true,
-              "value": "call_expression"
-            },
-            {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "arkui_dsl_decorator_member_expression"
-              },
-              "named": true,
-              "value": "member_expression"
             }
-          ]
-        }
-      ]
-    },
-    "arkui_dsl_decorator_call_expression": {
-      "type": "PREC",
-      "value": "call",
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "FIELD",
-            "name": "function",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "ALIAS",
-                  "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": "Builder"
-                      },
-                      {
-                        "type": "STRING",
-                        "value": "LocalBuilder"
-                      },
-                      {
-                        "type": "STRING",
-                        "value": "Extend"
-                      },
-                      {
-                        "type": "STRING",
-                        "value": "AnimatableExtend"
-                      },
-                      {
-                        "type": "STRING",
-                        "value": "Styles"
-                      }
-                    ]
-                  },
-                  "named": true,
-                  "value": "identifier"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "arkui_dsl_decorator_member_expression"
-                }
-              ]
-            }
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "FIELD",
-                "name": "type_arguments",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "type_arguments"
-                }
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
           },
           {
             "type": "FIELD",
@@ -9786,75 +9878,6 @@
             "content": {
               "type": "SYMBOL",
               "name": "arguments"
-            }
-          }
-        ]
-      }
-    },
-    "arkui_dsl_decorator_member_expression": {
-      "type": "PREC",
-      "value": "member",
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "FIELD",
-            "name": "object",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "identifier"
-                },
-                {
-                  "type": "ALIAS",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "arkui_dsl_decorator_member_expression"
-                  },
-                  "named": true,
-                  "value": "member_expression"
-                }
-              ]
-            }
-          },
-          {
-            "type": "STRING",
-            "value": "."
-          },
-          {
-            "type": "FIELD",
-            "name": "property",
-            "content": {
-              "type": "ALIAS",
-              "content": {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "Builder"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "LocalBuilder"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "Extend"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "AnimatableExtend"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "Styles"
-                  }
-                ]
-              },
-              "named": true,
-              "value": "property_identifier"
             }
           }
         ]
@@ -10061,6 +10084,142 @@
         }
       ]
     },
+    "_arkui_object": {
+      "type": "PREC",
+      "value": "object",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "{"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "_arkui_pair"
+                    },
+                    "named": true,
+                    "value": "pair"
+                  },
+                  {
+                    "type": "REPEAT",
+                    "content": {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": ","
+                        },
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "ALIAS",
+                              "content": {
+                                "type": "SYMBOL",
+                                "name": "_arkui_pair"
+                              },
+                              "named": true,
+                              "value": "pair"
+                            },
+                            {
+                              "type": "BLANK"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "STRING",
+            "value": "}"
+          }
+        ]
+      }
+    },
+    "_arkui_pair": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "key",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_property_name"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_arkui_expression"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_arkui_style_object"
+                },
+                "named": true,
+                "value": "object"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "_arkui_style_object": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "leading_dot_expression"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_semicolon"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
     "arkui_children": {
       "type": "SEQ",
       "members": [
@@ -10084,6 +10243,493 @@
     "arkui_component_expression": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_arkui_syntax_component_expression"
+        },
+        {
+          "type": "PREC_DYNAMIC",
+          "value": 2,
+          "content": {
+            "type": "PREC",
+            "value": "call",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "FIELD",
+                  "name": "function",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": "AbilityComponent"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "AlphabetIndexer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Animator"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Badge"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Blank"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Button"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Calendar"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "CalendarPicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Camera"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Canvas"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Checkbox"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "CheckboxGroup"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Circle"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ColorPicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ColorPickerDialog"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Column"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ColumnSplit"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Counter"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "DataPanel"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "DatePicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Divider"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Ellipse"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Flex"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "FlowItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "FolderStack"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "FormComponent"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "FormLink"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Gauge"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GeometryView"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Grid"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GridCol"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GridContainer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GridItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GridRow"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Hyperlink"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Image"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ImageAnimator"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ImageSpan"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Line"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "List"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ListItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ListItemGroup"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "LoadingProgress"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Marquee"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Menu"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "MenuItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "MenuItemGroup"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "NavDestination"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "NavRouter"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Navigation"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Navigator"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "NodeContainer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Option"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "PageTransitionEnter"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "PageTransitionExit"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Panel"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Path"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "PatternLock"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "PluginComponent"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Polygon"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Polyline"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Progress"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "QRCode"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Radio"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Rating"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Rect"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RelativeContainer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Refresh"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RemoteWindow"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RichEditor"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RichText"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Row"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RowSplit"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Scroll"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ScrollBar"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Search"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Section"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Select"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Shape"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Sheet"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "SideBarContainer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Slider"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Span"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Stack"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Stepper"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "StepperItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Swiper"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "SymbolGlyph"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "SymbolSpan"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Tabs"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TabContent"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Text"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextArea"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextClock"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextInput"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextPicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextTimer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TimePicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Toggle"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Video"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "WaterFlow"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Web"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "XComponent"
+                        }
+                      ]
+                    },
+                    "named": true,
+                    "value": "identifier"
+                  }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "type_arguments",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "type_arguments"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "arguments",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "arkui_arguments"
+                    },
+                    "named": true,
+                    "value": "arguments"
+                  }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "children",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "arkui_children"
+                  }
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_arkui_component_chain"
+                  }
+                }
+              ]
+            }
+          }
+        },
         {
           "type": "PREC_DYNAMIC",
           "value": 1,
@@ -10150,56 +10796,478 @@
           }
         },
         {
-          "type": "PREC",
-          "value": "call",
+          "type": "PREC_DYNAMIC",
+          "value": 1,
           "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "FIELD",
-                "name": "function",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "identifier"
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "type_arguments",
-                "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "type_arguments"
+            "type": "PREC",
+            "value": "call",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "FIELD",
+                  "name": "function",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "STRING",
+                          "value": "AbilityComponent"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "AlphabetIndexer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Animator"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Badge"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Blank"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Button"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Calendar"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "CalendarPicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Camera"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Canvas"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Checkbox"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "CheckboxGroup"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Circle"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ColorPicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ColorPickerDialog"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Column"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ColumnSplit"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Counter"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "DataPanel"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "DatePicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Divider"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Ellipse"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Flex"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "FlowItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "FolderStack"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "FormComponent"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "FormLink"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Gauge"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GeometryView"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Grid"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GridCol"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GridContainer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GridItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "GridRow"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Hyperlink"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Image"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ImageAnimator"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ImageSpan"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Line"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "List"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ListItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ListItemGroup"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "LoadingProgress"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Marquee"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Menu"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "MenuItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "MenuItemGroup"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "NavDestination"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "NavRouter"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Navigation"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Navigator"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "NodeContainer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Option"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "PageTransitionEnter"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "PageTransitionExit"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Panel"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Path"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "PatternLock"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "PluginComponent"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Polygon"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Polyline"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Progress"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "QRCode"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Radio"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Rating"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Rect"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RelativeContainer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Refresh"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RemoteWindow"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RichEditor"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RichText"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Row"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "RowSplit"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Scroll"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "ScrollBar"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Search"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Section"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Select"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Shape"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Sheet"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "SideBarContainer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Slider"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Span"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Stack"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Stepper"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "StepperItem"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Swiper"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "SymbolGlyph"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "SymbolSpan"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Tabs"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TabContent"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Text"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextArea"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextClock"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextInput"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextPicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TextTimer"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "TimePicker"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Toggle"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Video"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "WaterFlow"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "Web"
+                        },
+                        {
+                          "type": "STRING",
+                          "value": "XComponent"
+                        }
+                      ]
                     },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "FIELD",
-                "name": "arguments",
-                "content": {
-                  "type": "ALIAS",
+                    "named": true,
+                    "value": "identifier"
+                  }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "type_arguments",
+                  "content": {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "type_arguments"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "FIELD",
+                  "name": "arguments",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "arkui_arguments"
+                    },
+                    "named": true,
+                    "value": "arguments"
+                  }
+                },
+                {
+                  "type": "REPEAT",
                   "content": {
                     "type": "SYMBOL",
-                    "name": "arkui_arguments"
-                  },
-                  "named": true,
-                  "value": "arguments"
+                    "name": "_arkui_component_chain"
+                  }
                 }
-              },
-              {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "_arkui_component_chain"
-                }
-              }
-            ]
+              ]
+            }
           }
         },
         {
@@ -10306,6 +11374,81 @@
         }
       ]
     },
+    "_arkui_syntax_component_expression": {
+      "type": "PREC_DYNAMIC",
+      "value": 2,
+      "content": {
+        "type": "PREC",
+        "value": "call",
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "function",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "ForEach"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "LazyForEach"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "Repeat"
+                    }
+                  ]
+                },
+                "named": true,
+                "value": "identifier"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "type_arguments",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "type_arguments"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "arguments",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "arkui_arguments"
+                },
+                "named": true,
+                "value": "arguments"
+              }
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_arkui_component_chain"
+              }
+            }
+          ]
+        }
+      }
+    },
     "_arkui_component_chain": {
       "type": "SEQ",
       "members": [
@@ -10328,6 +11471,22 @@
         },
         {
           "type": "FIELD",
+          "name": "type_arguments",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "type_arguments"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FIELD",
           "name": "arguments",
           "content": {
             "type": "ALIAS",
@@ -10345,70 +11504,16 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "FIELD",
-            "name": "decorator",
-            "content": {
-              "type": "SYMBOL",
-              "name": "decorator"
-            }
-          }
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "accessibility_modifier"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "static"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "override_modifier"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "readonly"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
           "type": "FIELD",
           "name": "name",
           "content": {
-            "type": "SYMBOL",
-            "name": "_property_name"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_annotation_identifier"
+            },
+            "named": true,
+            "value": "property_identifier"
           }
         },
         {
@@ -10451,41 +11556,15 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "annotation_property_definition"
-                  },
-                  {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "CHOICE",
-                        "members": [
-                          {
-                            "type": "SYMBOL",
-                            "name": "_semicolon"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": ","
-                          }
-                        ]
-                      },
-                      {
-                        "type": "BLANK"
-                      }
-                    ]
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "annotation_property_definition"
               },
               {
-                "type": "STRING",
-                "value": ";"
+                "type": "SYMBOL",
+                "name": "_semicolon"
               }
             ]
           }
@@ -10503,19 +11582,34 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "STRING",
-            "value": "@"
-          },
-          {
-            "type": "STRING",
-            "value": "interface"
+            "type": "SYMBOL",
+            "name": "_annotation_marker"
           },
           {
             "type": "FIELD",
             "name": "name",
             "content": {
-              "type": "SYMBOL",
-              "name": "_type_identifier"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_annotation_identifier"
+                  },
+                  "named": true,
+                  "value": "type_identifier"
+                },
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "STRING",
+                    "value": "await"
+                  },
+                  "named": true,
+                  "value": "type_identifier"
+                }
+              ]
             }
           },
           {
@@ -10540,6 +11634,66 @@
           }
         ]
       }
+    },
+    "_annotation_marker": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@"
+          },
+          {
+            "type": "STRING",
+            "value": "interface"
+          }
+        ]
+      }
+    },
+    "_ambient_annotation_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "declare"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "annotation_declaration"
+        }
+      ]
+    },
+    "_export_annotation_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "export"
+        },
+        {
+          "type": "FIELD",
+          "name": "declaration",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "annotation_declaration"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_ambient_annotation_declaration"
+                },
+                "named": true,
+                "value": "ambient_declaration"
+              }
+            ]
+          }
+        }
+      ]
     },
     "struct_body": {
       "type": "SEQ",
@@ -10684,6 +11838,10 @@
                 ]
               },
               {
+                "type": "SYMBOL",
+                "name": "class_static_block"
+              },
+              {
                 "type": "SEQ",
                 "members": [
                   {
@@ -10711,20 +11869,12 @@
                     "type": "CHOICE",
                     "members": [
                       {
-                        "type": "CHOICE",
-                        "members": [
-                          {
-                            "type": "SYMBOL",
-                            "name": "_semicolon"
-                          },
-                          {
-                            "type": "STRING",
-                            "value": ","
-                          }
-                        ]
+                        "type": "SYMBOL",
+                        "name": "_semicolon"
                       },
                       {
-                        "type": "BLANK"
+                        "type": "STRING",
+                        "value": ","
                       }
                     ]
                   }
@@ -10764,20 +11914,51 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "STRING",
-                "value": "declare"
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "abstract"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "declare"
+                      },
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": "abstract"
+                          },
+                          {
+                            "type": "BLANK"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "abstract"
+                      },
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": "declare"
+                          },
+                          {
+                            "type": "BLANK"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "BLANK"
@@ -10811,6 +11992,18 @@
                 }
               ]
             }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "class_heritage"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "FIELD",
@@ -14608,7 +15801,46 @@
       "_arkui_primary_expression"
     ],
     [
+      "_arkui_statement_block",
+      "_arkui_object"
+    ],
+    [
+      "object",
+      "_arkui_statement_block",
+      "_arkui_object"
+    ],
+    [
+      "statement_block",
+      "object",
+      "_arkui_statement_block",
+      "_arkui_object"
+    ],
+    [
+      "object",
+      "object_pattern",
+      "_arkui_object",
+      "_arkui_style_object"
+    ],
+    [
+      "object",
+      "_arkui_object",
+      "_arkui_style_object"
+    ],
+    [
+      "object",
+      "_arkui_object"
+    ],
+    [
+      "pair",
+      "_arkui_pair"
+    ],
+    [
       "primary_expression",
+      "_arkui_primary_expression"
+    ],
+    [
+      "primary_expression",
+      "pattern",
       "_arkui_primary_expression"
     ],
     [
@@ -15434,6 +16666,14 @@
     {
       "type": "SYMBOL",
       "name": "__error_recovery"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_annotation_identifier"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_decorator_end"
     }
   ],
   "inline": [

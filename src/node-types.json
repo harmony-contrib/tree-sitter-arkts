@@ -12,10 +12,6 @@
         "named": true
       },
       {
-        "type": "annotation_declaration",
-        "named": true
-      },
-      {
         "type": "class_declaration",
         "named": true
       },
@@ -646,6 +642,10 @@
       "required": true,
       "types": [
         {
+          "type": "annotation_declaration",
+          "named": true
+        },
+        {
           "type": "declaration",
           "named": true
         },
@@ -709,38 +709,12 @@
     "type": "annotation_property_definition",
     "named": true,
     "fields": {
-      "decorator": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "decorator",
-            "named": true
-          }
-        ]
-      },
       "name": {
         "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "computed_property_name",
-            "named": true
-          },
-          {
-            "type": "number",
-            "named": true
-          },
-          {
-            "type": "private_property_identifier",
-            "named": true
-          },
-          {
             "type": "property_identifier",
-            "named": true
-          },
-          {
-            "type": "string",
             "named": true
           }
         ]
@@ -765,20 +739,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "accessibility_modifier",
-          "named": true
-        },
-        {
-          "type": "override_modifier",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -1064,41 +1024,11 @@
         ]
       },
       "type_arguments": {
-        "multiple": false,
+        "multiple": true,
         "required": false,
         "types": [
           {
             "type": "type_arguments",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "arkui_dsl_decorator_member_expression",
-    "named": true,
-    "fields": {
-      "object": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          },
-          {
-            "type": "member_expression",
-            "named": true
-          }
-        ]
-      },
-      "property": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "property_identifier",
             "named": true
           }
         ]
@@ -1761,10 +1691,6 @@
         "required": true,
         "types": [
           {
-            "type": "arkui_dsl_decorator_member_expression",
-            "named": true
-          },
-          {
             "type": "expression",
             "named": true
           },
@@ -2242,7 +2168,7 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "call_expression",
@@ -2496,6 +2422,10 @@
         "multiple": false,
         "required": false,
         "types": [
+          {
+            "type": "annotation_declaration",
+            "named": true
+          },
           {
             "type": "declaration",
             "named": true
@@ -4791,6 +4721,10 @@
       "required": false,
       "types": [
         {
+          "type": "leading_dot_expression",
+          "named": true
+        },
+        {
           "type": "method_definition",
           "named": true
         },
@@ -5069,7 +5003,107 @@
         "required": true,
         "types": [
           {
+            "type": "arkui_component_expression",
+            "named": true
+          },
+          {
+            "type": "array",
+            "named": true
+          },
+          {
+            "type": "arrow_function",
+            "named": true
+          },
+          {
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "class",
+            "named": true
+          },
+          {
             "type": "expression",
+            "named": true
+          },
+          {
+            "type": "false",
+            "named": true
+          },
+          {
+            "type": "function_expression",
+            "named": true
+          },
+          {
+            "type": "generator_function",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "leading_dot_expression",
+            "named": true
+          },
+          {
+            "type": "member_expression",
+            "named": true
+          },
+          {
+            "type": "meta_property",
+            "named": true
+          },
+          {
+            "type": "non_null_expression",
+            "named": true
+          },
+          {
+            "type": "null",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "object",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "regex",
+            "named": true
+          },
+          {
+            "type": "string",
+            "named": true
+          },
+          {
+            "type": "subscript_expression",
+            "named": true
+          },
+          {
+            "type": "super",
+            "named": true
+          },
+          {
+            "type": "template_string",
+            "named": true
+          },
+          {
+            "type": "this",
+            "named": true
+          },
+          {
+            "type": "true",
+            "named": true
+          },
+          {
+            "type": "undefined",
             "named": true
           }
         ]
@@ -5193,6 +5227,14 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "ambient_declaration",
+          "named": true
+        },
+        {
+          "type": "annotation_declaration",
+          "named": true
+        },
         {
           "type": "hash_bang_line",
           "named": true
@@ -5835,6 +5877,10 @@
           "named": true
         },
         {
+          "type": "class_static_block",
+          "named": true
+        },
+        {
           "type": "index_signature",
           "named": true
         },
@@ -5897,6 +5943,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "class_heritage",
+          "named": true
+        }
+      ]
     }
   },
   {

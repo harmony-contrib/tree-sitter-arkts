@@ -366,3 +366,614 @@ struct V {
                       (string
                         (string_fragment))
                       (true))))))))))))
+
+==================================
+OpenHarmony annotation declarations
+==================================
+
+@interface Empty {}
+export @interface Exported {}
+export declare @interface Ambient {}
+@interface Typed {
+  value: number
+}
+@interface Defaults {
+  count = 42
+  enabled: boolean = true
+  label: string = 'arkts'
+}
+@interface await {}
+@interface C\u0032 {}
+
+---
+
+(program
+  (annotation_declaration
+    (type_identifier)
+    (annotation_body))
+  (export_statement
+    (annotation_declaration
+      (type_identifier)
+      (annotation_body)))
+  (export_statement
+    (ambient_declaration
+      (annotation_declaration
+        (type_identifier)
+        (annotation_body))))
+  (annotation_declaration
+    (type_identifier)
+    (annotation_body
+      (annotation_property_definition
+        (property_identifier)
+        (type_annotation
+          (predefined_type)))))
+  (annotation_declaration
+    (type_identifier)
+    (annotation_body
+      (annotation_property_definition
+        (property_identifier)
+        (number))
+      (annotation_property_definition
+        (property_identifier)
+        (type_annotation
+          (predefined_type))
+        (true))
+      (annotation_property_definition
+        (property_identifier)
+        (type_annotation
+          (predefined_type))
+        (string
+          (string_fragment)))))
+  (annotation_declaration
+    (type_identifier)
+    (annotation_body))
+  (annotation_declaration
+    (type_identifier)
+    (annotation_body)))
+
+==================================
+Annotation declarations are top-level and contiguous
+==================================
+
+namespace InvalidNamespace {
+  @interface Invalid {}
+}
+@ interface InvalidWhitespace {}
+
+---
+
+(program
+  (expression_statement
+    (internal_module
+      (identifier)
+      (statement_block
+        (ERROR
+          (identifier))
+        (statement_block))))
+  (ERROR
+    (decorator
+      (identifier))
+    (identifier))
+  (statement_block))
+
+==================================
+Annotation declarations reject reserved names and invalid members
+==================================
+
+@interface class {}
+@interface InvalidMembers {
+  public value = 10
+  ;
+  method() {}
+  [index: number]: number
+}
+
+---
+
+(program
+  (ERROR)
+  (expression_statement
+    (class
+      (class_body)))
+  (annotation_declaration
+    (type_identifier)
+    (annotation_body
+      (ERROR
+        (identifier))
+      (annotation_property_definition
+        (property_identifier)
+        (number))
+      (ERROR
+        (property_identifier))))
+  (ERROR
+    (array
+      (ERROR
+        (identifier))
+      (identifier))))
+
+==================================
+Annotation marker cannot be used as a decorator
+==================================
+
+declare let other: PropertyDecorator
+class Invalid {
+  @interface
+  @other
+  value: number = 1
+}
+
+---
+
+(program
+  (ambient_declaration
+    (lexical_declaration
+      (variable_declarator
+        (identifier)
+        (type_annotation
+          (type_identifier)))))
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (ERROR)
+      (public_field_definition
+        (decorator
+          (identifier))
+        (property_identifier)
+        (type_annotation
+          (predefined_type))
+        (number)))))
+
+==================================
+Struct heritage and class-like members
+==================================
+
+interface First {}
+interface Second {}
+class Base {}
+
+export abstract struct Derived<T> extends Base implements First, Second {
+  static {
+    initialize()
+  }
+  static readonly values: string[]
+  readonly [key: string]: unknown
+  accessor current: T
+  constructor(value: T) {
+    this.current = value
+  }
+  abstract render(): void
+  get value(): T {
+    return this.current
+  }
+  set value(next: T) {
+    this.current = next
+  }
+}
+
+---
+
+(program
+  (interface_declaration
+    (type_identifier)
+    (interface_body))
+  (interface_declaration
+    (type_identifier)
+    (interface_body))
+  (class_declaration
+    (type_identifier)
+    (class_body))
+  (export_statement
+    (struct_declaration
+      (type_identifier)
+      (type_parameters
+        (type_parameter
+          (type_identifier)))
+      (class_heritage
+        (extends_clause
+          (identifier))
+        (implements_clause
+          (type_identifier)
+          (type_identifier)))
+      (struct_body
+        (class_static_block
+          (statement_block
+            (expression_statement
+              (call_expression
+                (identifier)
+                (arguments)))))
+        (public_field_definition
+          (property_identifier)
+          (type_annotation
+            (array_type
+              (predefined_type))))
+        (index_signature
+          (identifier)
+          (predefined_type)
+          (type_annotation
+            (predefined_type)))
+        (public_field_definition
+          (property_identifier)
+          (type_annotation
+            (type_identifier)))
+        (method_definition
+          (property_identifier)
+          (formal_parameters
+            (required_parameter
+              (identifier)
+              (type_annotation
+                (type_identifier))))
+          (statement_block
+            (expression_statement
+              (assignment_expression
+                (member_expression
+                  (this)
+                  (property_identifier))
+                (identifier)))))
+        (abstract_method_signature
+          (property_identifier)
+          (formal_parameters)
+          (type_annotation
+            (predefined_type)))
+        (method_definition
+          (property_identifier)
+          (formal_parameters)
+          (type_annotation
+            (type_identifier))
+          (statement_block
+            (return_statement
+              (member_expression
+                (this)
+                (property_identifier)))))
+        (method_definition
+          (property_identifier)
+          (formal_parameters
+            (required_parameter
+              (identifier)
+              (type_annotation
+                (type_identifier))))
+          (statement_block
+            (expression_statement
+              (assignment_expression
+                (member_expression
+                  (this)
+                  (property_identifier))
+                (identifier)))))))))
+
+==================================
+Component empty children and generic chains
+==================================
+
+@Component
+struct ComponentRegression {
+  build() {
+    Column() {}
+
+    Column<string>() {
+      const label = 'value'
+      if (label) {
+        Text(label)
+      }
+      this.a('one')
+      this.b('two', true)
+    }.attribute<number>(1)
+
+    helper()
+  }
+}
+
+---
+
+(program
+  (struct_declaration
+    (decorator
+      (identifier))
+    (type_identifier)
+    (struct_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (expression_statement
+            (arkui_component_expression
+              (identifier)
+              (arguments)
+              (arkui_children)))
+          (expression_statement
+            (arkui_component_expression
+              (identifier)
+              (type_arguments
+                (predefined_type))
+              (arguments)
+              (arkui_children
+                (lexical_declaration
+                  (variable_declarator
+                    (identifier)
+                    (string
+                      (string_fragment))))
+                (if_statement
+                  (parenthesized_expression
+                    (identifier))
+                  (statement_block
+                    (expression_statement
+                      (arkui_component_expression
+                        (identifier)
+                        (arguments
+                          (identifier))))))
+                (expression_statement
+                  (call_expression
+                    (member_expression
+                      (this)
+                      (property_identifier))
+                    (arguments
+                      (string
+                        (string_fragment)))))
+                (expression_statement
+                  (call_expression
+                    (member_expression
+                      (this)
+                      (property_identifier))
+                    (arguments
+                      (string
+                        (string_fragment))
+                      (true)))))
+              (property_identifier)
+              (type_arguments
+                (predefined_type))
+              (arguments
+                (number))))
+          (expression_statement
+            (call_expression
+              (identifier)
+              (arguments))))))))
+
+==================================
+ArkUI callback context does not leak to ordinary calls
+==================================
+
+@Component
+struct CallbackContext {
+  build() {
+    ForEach(items, (item: string) => {
+      Text(item)
+    })
+    Repeat(items).each((item: string) => {
+      Text(item)
+    })
+    helper(() => {
+      Text('plain call')
+    })
+  }
+}
+
+---
+
+(program
+  (struct_declaration
+    (decorator
+      (identifier))
+    (type_identifier)
+    (struct_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (expression_statement
+            (arkui_component_expression
+              (identifier)
+              (arguments
+                (identifier)
+                (arrow_function
+                  (formal_parameters
+                    (required_parameter
+                      (identifier)
+                      (type_annotation
+                        (predefined_type))))
+                  (statement_block
+                    (expression_statement
+                      (arkui_component_expression
+                        (identifier)
+                        (arguments
+                          (identifier)))))))))
+          (expression_statement
+            (arkui_component_expression
+              (identifier)
+              (arguments
+                (identifier))
+              (property_identifier)
+              (arguments
+                (arrow_function
+                  (formal_parameters
+                    (required_parameter
+                      (identifier)
+                      (type_annotation
+                        (predefined_type))))
+                  (statement_block
+                    (expression_statement
+                      (arkui_component_expression
+                        (identifier)
+                        (arguments
+                          (identifier)))))))))
+          (expression_statement
+            (call_expression
+              (identifier)
+              (arguments
+                (arrow_function
+                  (formal_parameters)
+                  (statement_block
+                    (expression_statement
+                      (call_expression
+                        (identifier)
+                        (arguments
+                          (string
+                            (string_fragment)))))))))))))))
+
+==================================
+Only exact ArkUI decorators enable DSL bodies
+==================================
+
+@Builder
+function exactBuilder() {
+  Text('component')
+}
+
+@Builder()
+function calledBuilder() {
+  Text('plain call')
+}
+
+@Ark.Builder
+function qualifiedBuilder() {
+  Text('plain call')
+}
+
+---
+
+(program
+  (function_declaration
+    (decorator
+      (identifier))
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (expression_statement
+        (arkui_component_expression
+          (identifier)
+          (arguments
+            (string
+              (string_fragment)))))))
+  (function_declaration
+    (decorator
+      (call_expression
+        (identifier)
+        (arguments)))
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments
+            (string
+              (string_fragment)))))))
+  (function_declaration
+    (decorator
+      (member_expression
+        (identifier)
+        (property_identifier)))
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments
+            (string
+              (string_fragment))))))))
+
+==================================
+State styles leading-dot blocks
+==================================
+
+@Component
+struct StateStylesExample {
+  build() {
+    Button('Fancy')
+      .stateStyles({
+        normal: {
+          .width(100)
+          .height(100)
+          .backgroundColor(Color.Blue)
+        },
+        disabled: this.disabledStyle
+      })
+  }
+}
+
+---
+
+(program
+  (struct_declaration
+    (decorator
+      (identifier))
+    (type_identifier)
+    (struct_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (expression_statement
+            (arkui_component_expression
+              (identifier)
+              (arguments
+                (string
+                  (string_fragment)))
+              (property_identifier)
+              (arguments
+                (object
+                  (pair
+                    (property_identifier)
+                    (object
+                      (leading_dot_expression
+                        (call_expression
+                          (member_expression
+                            (call_expression
+                              (member_expression
+                                (call_expression
+                                  (identifier)
+                                  (arguments
+                                    (number)))
+                                (property_identifier))
+                              (arguments
+                                (number)))
+                            (property_identifier))
+                          (arguments
+                            (member_expression
+                              (identifier)
+                              (property_identifier)))))))
+                  (pair
+                    (property_identifier)
+                    (member_expression
+                      (this)
+                      (property_identifier))))))))))))
+
+==================================
+Same-line component children require terminators
+==================================
+
+@Component
+struct InvalidChildren {
+  build() {
+    Column() { Text('first') Text('second') }
+  }
+}
+
+---
+
+(program
+  (struct_declaration
+    (decorator
+      (identifier))
+    (type_identifier)
+    (struct_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (expression_statement
+            (arkui_component_expression
+              (identifier)
+              (arguments)
+              (arkui_children
+                (expression_statement
+                  (arkui_component_expression
+                    (identifier)
+                    (arguments
+                      (string
+                        (string_fragment))))
+                  (MISSING ";"))
+                (expression_statement
+                  (arkui_component_expression
+                    (identifier)
+                    (arguments
+                      (string
+                        (string_fragment)))))))))))))
