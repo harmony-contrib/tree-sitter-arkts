@@ -1,25 +1,5 @@
 const JavaScript = require('tree-sitter-javascript/grammar');
 
-const ARKUI_BUILTIN_COMPONENTS = [
-  'AbilityComponent', 'AlphabetIndexer', 'Animator', 'Badge', 'Blank', 'Button',
-  'Calendar', 'CalendarPicker', 'Camera', 'Canvas', 'Checkbox', 'CheckboxGroup',
-  'Circle', 'ColorPicker', 'ColorPickerDialog', 'Column', 'ColumnSplit', 'Counter',
-  'DataPanel', 'DatePicker', 'Divider', 'Ellipse', 'Flex', 'FlowItem', 'FolderStack',
-  'FormComponent', 'FormLink', 'Gauge', 'GeometryView', 'Grid', 'GridCol',
-  'GridContainer', 'GridItem', 'GridRow', 'Hyperlink', 'Image', 'ImageAnimator',
-  'ImageSpan', 'Line', 'List', 'ListItem', 'ListItemGroup', 'LoadingProgress',
-  'Marquee', 'Menu', 'MenuItem', 'MenuItemGroup', 'NavDestination', 'NavRouter',
-  'Navigation', 'Navigator', 'NodeContainer', 'Option', 'PageTransitionEnter',
-  'PageTransitionExit', 'Panel', 'Path', 'PatternLock', 'PluginComponent', 'Polygon',
-  'Polyline', 'Progress', 'QRCode', 'Radio', 'Rating', 'Rect', 'RelativeContainer',
-  'Refresh', 'RemoteWindow', 'RichEditor', 'RichText', 'Row', 'RowSplit', 'Scroll',
-  'ScrollBar', 'Search', 'Section', 'Select', 'Shape', 'Sheet', 'SideBarContainer',
-  'Slider', 'Span', 'Stack', 'Stepper', 'StepperItem', 'Swiper', 'SymbolGlyph',
-  'SymbolSpan', 'Tabs', 'TabContent', 'Text', 'TextArea', 'TextClock', 'TextInput',
-  'TextPicker', 'TextTimer', 'TimePicker', 'Toggle', 'Video', 'WaterFlow', 'Web',
-  'XComponent',
-];
-
 module.exports = grammar(JavaScript, {
   name: 'arkts',
 
@@ -135,6 +115,8 @@ module.exports = grammar(JavaScript, {
     [$.primary_expression, $.internal_module],
     [$.subscript_expression, $._initializer],
     [$.arkui_component_expression, $.call_expression],
+    [$.call_expression, $._arkui_call_expression],
+    [$.arguments, $.arkui_arguments],
     [$.primary_expression, $.arkui_component_expression],
     [$.primary_expression, $.leading_dot_expression],
     [$.leading_dot_expression, $.member_expression],
@@ -164,6 +146,9 @@ module.exports = grammar(JavaScript, {
     [$.primary_expression, $._property_name, $._arkui_primary_expression],
     [$.export_statement, $._arkui_primary_expression],
     [$.primary_expression, $._arkui_primary_expression, $.arkui_component_expression],
+    [$.primary_expression, $._arkui_call_expression, $.arkui_component_expression],
+    [$.primary_expression, $._arkui_call_expression],
+    [$.primary_expression, $._property_name, $._arkui_call_expression, $.arkui_component_expression],
     [$.primary_expression, $._property_name, $._arkui_primary_expression, $.arkui_component_expression],
     [$.primary_expression, $.function_expression, $.generator_function],
     [$.arkui_component_expression],
@@ -583,7 +568,28 @@ module.exports = grammar(JavaScript, {
       $.class,
       $.meta_property,
       $.call_expression,
+      alias($._arkui_call_expression, $.call_expression),
       $.non_null_expression,
+    ),
+
+    // Keep ordinary calls neutral in ArkUI blocks. Whether a call targets a
+    // configured component is project/compiler-option data, not syntax.
+    _arkui_call_expression: $ => choice(
+      prec('call', seq(
+        field('function', choice($.identifier, $.member_expression)),
+        field('type_arguments', optional($.type_arguments)),
+        field('arguments', alias($.arkui_arguments, $.arguments)),
+      )),
+      prec('template_call', seq(
+        field('function', choice($.primary_expression, $.new_expression)),
+        field('arguments', $.template_string),
+      )),
+      prec('member', seq(
+        field('function', $.primary_expression),
+        '?.',
+        field('type_arguments', optional($.type_arguments)),
+        field('arguments', alias($.arkui_arguments, $.arguments)),
+      )),
     ),
 
     _arkui_arrow_function: $ => seq(
@@ -897,55 +903,11 @@ module.exports = grammar(JavaScript, {
       '}',
     ),
 
-    arkui_component_expression: $ => choice(
-      $._arkui_syntax_component_expression,
-      prec.dynamic(2, prec('call', seq(
-        field('function', alias(choice(...ARKUI_BUILTIN_COMPONENTS), $.identifier)),
-        field('type_arguments', optional($.type_arguments)),
-        field('arguments', alias($.arkui_arguments, $.arguments)),
-        field('children', $.arkui_children),
-        repeat($._arkui_component_chain),
-      ))),
-      prec.dynamic(1, prec('call', seq(
-        field('function', $.identifier),
-        field('type_arguments', optional($.type_arguments)),
-        field('arguments', alias($.arkui_arguments, $.arguments)),
-        field('children', $.arkui_children),
-        repeat($._arkui_component_chain),
-      ))),
-      prec.dynamic(1, prec('call', seq(
-        field('function', alias(choice(...ARKUI_BUILTIN_COMPONENTS), $.identifier)),
-        field('type_arguments', optional($.type_arguments)),
-        field('arguments', alias($.arkui_arguments, $.arguments)),
-        repeat($._arkui_component_chain),
-      ))),
-      prec.dynamic(1, prec('call', seq(
-        field('function', choice(
-          $.this,
-          $.super,
-          $.member_expression,
-          $.subscript_expression,
-          $.call_expression,
-          $.new_expression,
-          $.parenthesized_expression,
-          $.non_null_expression,
-          $.meta_property,
-        )),
-        field('type_arguments', optional($.type_arguments)),
-        field('arguments', alias($.arkui_arguments, $.arguments)),
-        field('children', $.arkui_children),
-        repeat($._arkui_component_chain),
-      ))),
-    ),
-
-    _arkui_syntax_component_expression: $ => prec.dynamic(2, prec('call', seq(
-      field('function', alias(choice(
-        'ForEach',
-        'LazyForEach',
-        'Repeat',
-      ), $.identifier)),
+    arkui_component_expression: $ => prec.dynamic(2, prec('call', seq(
+      field('function', $.identifier),
       field('type_arguments', optional($.type_arguments)),
       field('arguments', alias($.arkui_arguments, $.arguments)),
+      field('children', $.arkui_children),
       repeat($._arkui_component_chain),
     ))),
 

@@ -58,7 +58,7 @@ export default struct HelloWorld {
                 (arguments)
                 (arkui_children
                   (expression_statement
-                    (arkui_component_expression
+                    (call_expression
                       (identifier)
                       (arguments
                         (string
@@ -117,7 +117,7 @@ function test() {
           (arguments)
           (arkui_children
             (expression_statement
-              (arkui_component_expression
+              (call_expression
                 (identifier)
                 (arguments
                   (string
@@ -150,7 +150,7 @@ export function test() {
             (arguments)
             (arkui_children
               (expression_statement
-                (arkui_component_expression
+                (call_expression
                   (identifier)
                   (arguments
                     (string
@@ -695,7 +695,7 @@ struct ComponentRegression {
                     (identifier))
                   (statement_block
                     (expression_statement
-                      (arkui_component_expression
+                      (call_expression
                         (identifier)
                         (arguments
                           (identifier))))))
@@ -758,7 +758,7 @@ struct CallbackContext {
         (formal_parameters)
         (statement_block
           (expression_statement
-            (arkui_component_expression
+            (call_expression
               (identifier)
               (arguments
                 (identifier)
@@ -770,16 +770,18 @@ struct CallbackContext {
                         (predefined_type))))
                   (statement_block
                     (expression_statement
-                      (arkui_component_expression
+                      (call_expression
                         (identifier)
                         (arguments
                           (identifier)))))))))
           (expression_statement
-            (arkui_component_expression
-              (identifier)
-              (arguments
-                (identifier))
-              (property_identifier)
+            (call_expression
+              (member_expression
+                (call_expression
+                  (identifier)
+                  (arguments
+                    (identifier)))
+                (property_identifier))
               (arguments
                 (arrow_function
                   (formal_parameters
@@ -789,7 +791,7 @@ struct CallbackContext {
                         (predefined_type))))
                   (statement_block
                     (expression_statement
-                      (arkui_component_expression
+                      (call_expression
                         (identifier)
                         (arguments
                           (identifier)))))))))
@@ -836,7 +838,7 @@ function qualifiedBuilder() {
     (formal_parameters)
     (statement_block
       (expression_statement
-        (arkui_component_expression
+        (call_expression
           (identifier)
           (arguments
             (string
@@ -902,12 +904,14 @@ struct StateStylesExample {
         (formal_parameters)
         (statement_block
           (expression_statement
-            (arkui_component_expression
-              (identifier)
-              (arguments
-                (string
-                  (string_fragment)))
-              (property_identifier)
+            (call_expression
+              (member_expression
+                (call_expression
+                  (identifier)
+                  (arguments
+                    (string
+                      (string_fragment))))
+                (property_identifier))
               (arguments
                 (object
                   (pair
@@ -965,15 +969,81 @@ struct InvalidChildren {
               (arguments)
               (arkui_children
                 (expression_statement
-                  (arkui_component_expression
+                  (call_expression
                     (identifier)
                     (arguments
                       (string
                         (string_fragment))))
                   (MISSING ";"))
                 (expression_statement
-                  (arkui_component_expression
+                  (call_expression
                     (identifier)
                     (arguments
                       (string
                         (string_fragment)))))))))))))
+
+==================================
+Component names are configuration-independent
+==================================
+
+@Component
+struct ConfigurationIndependent {
+  build() {
+    FutureSdkLeaf()
+    FutureSdkContainer() {
+      ProjectConfiguredLeaf()
+    }
+    ProjectConfiguredEach(items, (item: Item) => {
+      ProjectConfiguredContainer() {
+        FutureSdkLeaf()
+      }
+    })
+  }
+}
+
+---
+
+(program
+  (struct_declaration
+    (decorator
+      (identifier))
+    (type_identifier)
+    (struct_body
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (statement_block
+          (expression_statement
+            (call_expression
+              (identifier)
+              (arguments)))
+          (expression_statement
+            (arkui_component_expression
+              (identifier)
+              (arguments)
+              (arkui_children
+                (expression_statement
+                  (call_expression
+                    (identifier)
+                    (arguments))))))
+          (expression_statement
+            (call_expression
+              (identifier)
+              (arguments
+                (identifier)
+                (arrow_function
+                  (formal_parameters
+                    (required_parameter
+                      (identifier)
+                      (type_annotation
+                        (type_identifier))))
+                  (statement_block
+                    (expression_statement
+                      (arkui_component_expression
+                        (identifier)
+                        (arguments)
+                        (arkui_children
+                          (expression_statement
+                            (call_expression
+                              (identifier)
+                              (arguments))))))))))))))))

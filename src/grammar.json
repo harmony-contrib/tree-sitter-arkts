@@ -8786,8 +8786,161 @@
           "name": "call_expression"
         },
         {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_arkui_call_expression"
+          },
+          "named": true,
+          "value": "call_expression"
+        },
+        {
           "type": "SYMBOL",
           "name": "non_null_expression"
+        }
+      ]
+    },
+    "_arkui_call_expression": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PREC",
+          "value": "call",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "function",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "identifier"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "member_expression"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "type_arguments",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "type_arguments"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "arguments",
+                "content": {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "arkui_arguments"
+                  },
+                  "named": true,
+                  "value": "arguments"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC",
+          "value": "template_call",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "function",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "primary_expression"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "new_expression"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "arguments",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "template_string"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC",
+          "value": "member",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "function",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "primary_expression"
+                }
+              },
+              {
+                "type": "STRING",
+                "value": "?."
+              },
+              {
+                "type": "FIELD",
+                "name": "type_arguments",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "type_arguments"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "arguments",
+                "content": {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "arkui_arguments"
+                  },
+                  "named": true,
+                  "value": "arguments"
+                }
+              }
+            ]
+          }
         }
       ]
     },
@@ -10241,1140 +10394,6 @@
       ]
     },
     "arkui_component_expression": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_arkui_syntax_component_expression"
-        },
-        {
-          "type": "PREC_DYNAMIC",
-          "value": 2,
-          "content": {
-            "type": "PREC",
-            "value": "call",
-            "content": {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "FIELD",
-                  "name": "function",
-                  "content": {
-                    "type": "ALIAS",
-                    "content": {
-                      "type": "CHOICE",
-                      "members": [
-                        {
-                          "type": "STRING",
-                          "value": "AbilityComponent"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "AlphabetIndexer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Animator"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Badge"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Blank"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Button"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Calendar"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "CalendarPicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Camera"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Canvas"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Checkbox"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "CheckboxGroup"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Circle"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ColorPicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ColorPickerDialog"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Column"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ColumnSplit"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Counter"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "DataPanel"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "DatePicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Divider"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Ellipse"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Flex"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "FlowItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "FolderStack"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "FormComponent"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "FormLink"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Gauge"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GeometryView"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Grid"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GridCol"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GridContainer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GridItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GridRow"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Hyperlink"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Image"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ImageAnimator"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ImageSpan"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Line"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "List"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ListItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ListItemGroup"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "LoadingProgress"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Marquee"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Menu"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "MenuItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "MenuItemGroup"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "NavDestination"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "NavRouter"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Navigation"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Navigator"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "NodeContainer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Option"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "PageTransitionEnter"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "PageTransitionExit"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Panel"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Path"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "PatternLock"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "PluginComponent"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Polygon"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Polyline"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Progress"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "QRCode"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Radio"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Rating"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Rect"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RelativeContainer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Refresh"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RemoteWindow"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RichEditor"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RichText"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Row"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RowSplit"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Scroll"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ScrollBar"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Search"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Section"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Select"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Shape"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Sheet"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "SideBarContainer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Slider"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Span"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Stack"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Stepper"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "StepperItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Swiper"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "SymbolGlyph"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "SymbolSpan"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Tabs"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TabContent"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Text"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextArea"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextClock"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextInput"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextPicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextTimer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TimePicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Toggle"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Video"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "WaterFlow"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Web"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "XComponent"
-                        }
-                      ]
-                    },
-                    "named": true,
-                    "value": "identifier"
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "type_arguments",
-                  "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "type_arguments"
-                      },
-                      {
-                        "type": "BLANK"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "arguments",
-                  "content": {
-                    "type": "ALIAS",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "arkui_arguments"
-                    },
-                    "named": true,
-                    "value": "arguments"
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "children",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "arkui_children"
-                  }
-                },
-                {
-                  "type": "REPEAT",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_arkui_component_chain"
-                  }
-                }
-              ]
-            }
-          }
-        },
-        {
-          "type": "PREC_DYNAMIC",
-          "value": 1,
-          "content": {
-            "type": "PREC",
-            "value": "call",
-            "content": {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "FIELD",
-                  "name": "function",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "identifier"
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "type_arguments",
-                  "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "type_arguments"
-                      },
-                      {
-                        "type": "BLANK"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "arguments",
-                  "content": {
-                    "type": "ALIAS",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "arkui_arguments"
-                    },
-                    "named": true,
-                    "value": "arguments"
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "children",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "arkui_children"
-                  }
-                },
-                {
-                  "type": "REPEAT",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_arkui_component_chain"
-                  }
-                }
-              ]
-            }
-          }
-        },
-        {
-          "type": "PREC_DYNAMIC",
-          "value": 1,
-          "content": {
-            "type": "PREC",
-            "value": "call",
-            "content": {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "FIELD",
-                  "name": "function",
-                  "content": {
-                    "type": "ALIAS",
-                    "content": {
-                      "type": "CHOICE",
-                      "members": [
-                        {
-                          "type": "STRING",
-                          "value": "AbilityComponent"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "AlphabetIndexer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Animator"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Badge"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Blank"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Button"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Calendar"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "CalendarPicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Camera"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Canvas"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Checkbox"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "CheckboxGroup"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Circle"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ColorPicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ColorPickerDialog"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Column"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ColumnSplit"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Counter"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "DataPanel"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "DatePicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Divider"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Ellipse"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Flex"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "FlowItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "FolderStack"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "FormComponent"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "FormLink"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Gauge"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GeometryView"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Grid"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GridCol"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GridContainer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GridItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "GridRow"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Hyperlink"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Image"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ImageAnimator"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ImageSpan"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Line"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "List"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ListItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ListItemGroup"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "LoadingProgress"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Marquee"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Menu"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "MenuItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "MenuItemGroup"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "NavDestination"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "NavRouter"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Navigation"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Navigator"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "NodeContainer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Option"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "PageTransitionEnter"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "PageTransitionExit"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Panel"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Path"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "PatternLock"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "PluginComponent"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Polygon"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Polyline"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Progress"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "QRCode"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Radio"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Rating"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Rect"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RelativeContainer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Refresh"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RemoteWindow"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RichEditor"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RichText"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Row"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "RowSplit"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Scroll"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "ScrollBar"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Search"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Section"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Select"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Shape"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Sheet"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "SideBarContainer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Slider"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Span"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Stack"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Stepper"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "StepperItem"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Swiper"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "SymbolGlyph"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "SymbolSpan"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Tabs"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TabContent"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Text"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextArea"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextClock"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextInput"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextPicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TextTimer"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "TimePicker"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Toggle"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Video"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "WaterFlow"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "Web"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": "XComponent"
-                        }
-                      ]
-                    },
-                    "named": true,
-                    "value": "identifier"
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "type_arguments",
-                  "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "type_arguments"
-                      },
-                      {
-                        "type": "BLANK"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "arguments",
-                  "content": {
-                    "type": "ALIAS",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "arkui_arguments"
-                    },
-                    "named": true,
-                    "value": "arguments"
-                  }
-                },
-                {
-                  "type": "REPEAT",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_arkui_component_chain"
-                  }
-                }
-              ]
-            }
-          }
-        },
-        {
-          "type": "PREC_DYNAMIC",
-          "value": 1,
-          "content": {
-            "type": "PREC",
-            "value": "call",
-            "content": {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "FIELD",
-                  "name": "function",
-                  "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "this"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "super"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "member_expression"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "subscript_expression"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "call_expression"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "new_expression"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "parenthesized_expression"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "non_null_expression"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "meta_property"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "type_arguments",
-                  "content": {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "type_arguments"
-                      },
-                      {
-                        "type": "BLANK"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "arguments",
-                  "content": {
-                    "type": "ALIAS",
-                    "content": {
-                      "type": "SYMBOL",
-                      "name": "arkui_arguments"
-                    },
-                    "named": true,
-                    "value": "arguments"
-                  }
-                },
-                {
-                  "type": "FIELD",
-                  "name": "children",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "arkui_children"
-                  }
-                },
-                {
-                  "type": "REPEAT",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "_arkui_component_chain"
-                  }
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    "_arkui_syntax_component_expression": {
       "type": "PREC_DYNAMIC",
       "value": 2,
       "content": {
@@ -11387,26 +10406,8 @@
               "type": "FIELD",
               "name": "function",
               "content": {
-                "type": "ALIAS",
-                "content": {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "STRING",
-                      "value": "ForEach"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "LazyForEach"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "Repeat"
-                    }
-                  ]
-                },
-                "named": true,
-                "value": "identifier"
+                "type": "SYMBOL",
+                "name": "identifier"
               }
             },
             {
@@ -11436,6 +10437,14 @@
                 },
                 "named": true,
                 "value": "arguments"
+              }
+            },
+            {
+              "type": "FIELD",
+              "name": "children",
+              "content": {
+                "type": "SYMBOL",
+                "name": "arkui_children"
               }
             },
             {
@@ -15730,6 +14739,14 @@
       "call_expression"
     ],
     [
+      "call_expression",
+      "_arkui_call_expression"
+    ],
+    [
+      "arguments",
+      "arkui_arguments"
+    ],
+    [
       "primary_expression",
       "arkui_component_expression"
     ],
@@ -15855,6 +14872,21 @@
     [
       "primary_expression",
       "_arkui_primary_expression",
+      "arkui_component_expression"
+    ],
+    [
+      "primary_expression",
+      "_arkui_call_expression",
+      "arkui_component_expression"
+    ],
+    [
+      "primary_expression",
+      "_arkui_call_expression"
+    ],
+    [
+      "primary_expression",
+      "_property_name",
+      "_arkui_call_expression",
       "arkui_component_expression"
     ],
     [
