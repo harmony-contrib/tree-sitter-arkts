@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const corpusDir = path.join('test', 'corpus');
 const outputRoot = path.join('build', 'corpus-fixtures');
+const invalidFilesList = path.join('build', 'corpus-fixtures-invalid.txt');
 
 const groups = [
   {
@@ -25,6 +26,7 @@ const groups = [
 await rm(outputRoot, {force: true, recursive: true});
 
 let fixtureCount = 0;
+const invalidFixtures = [];
 
 for (const group of groups) {
   const outputDir = path.join(outputRoot, group.name);
@@ -41,22 +43,33 @@ for (const group of groups) {
         slugify(testCase.name),
       ].join('-');
 
-      await writeFile(
-        path.join(outputDir, `${filename}.${group.extension}`),
-        `${testCase.source.trimEnd()}\n`,
-      );
+      const fixturePath = path.join(outputDir, `${filename}.${group.extension}`);
+
+      await writeFile(fixturePath, `${testCase.source.trimEnd()}\n`);
+
+      if (testCase.expectedInvalid) {
+        invalidFixtures.push(fixturePath.split(path.sep).join('/'));
+      }
       fixtureCount += 1;
     }
   }
 }
 
-console.log(`Extracted ${fixtureCount} ArkTS/JS/TS corpus fixtures to ${outputRoot}`);
+await writeFile(
+  invalidFilesList,
+  invalidFixtures.length > 0 ? `${invalidFixtures.join('\n')}\n` : '',
+);
+
+console.log(
+  `Extracted ${fixtureCount} ArkTS/JS/TS corpus fixtures to ${outputRoot} ` +
+  `(${invalidFixtures.length} expected invalid)`,
+);
 
 /**
  * Extract source snippets from a tree-sitter corpus file.
  *
  * @param {string} content
- * @returns {{name: string, source: string}[]}
+ * @returns {{name: string, source: string, expectedInvalid: boolean}[]}
  */
 function extractCases(content) {
   const lines = content.split(/\r?\n/);
@@ -79,9 +92,22 @@ function extractCases(content) {
       i += 1;
     }
 
+    const expected = [];
+    if (lines[i] === '---') {
+      i += 1;
+      while (i < lines.length && !isSeparator(lines[i])) {
+        expected.push(lines[i]);
+        i += 1;
+      }
+      i -= 1;
+    }
+
+    const expectedTree = expected.join('\n').trim();
+
     cases.push({
       name,
       source: source.join('\n'),
+      expectedInvalid: expectedTree === '' || /\((?:ERROR|MISSING)(?:\s|\))/.test(expectedTree),
     });
   }
 
