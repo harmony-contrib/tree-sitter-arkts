@@ -50,6 +50,7 @@ jobs:
             build/corpus-fixtures/arkts/**/*.ets
             build/corpus-fixtures/javascript/**/*.js
             build/corpus-fixtures/typescript/**/*.ts
+          invalid-files-list: build/corpus-fixtures-invalid.txt
   hmosworld:
     name: Parse hmosworld ETS files
     runs-on: ubuntu-latest
