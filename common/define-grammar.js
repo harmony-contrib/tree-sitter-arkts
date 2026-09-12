@@ -345,7 +345,7 @@ module.exports = grammar(JavaScript, {
       previous,
     ),
 
-    _import_identifier: $ => choice($.identifier, alias('type', $.identifier)),
+    _import_identifier: $ => choice($.identifier, alias(choice('type', 'lazy'), $.identifier)),
 
     import_specifier: $ => seq(
       optional(choice('type', 'typeof')),
@@ -395,7 +395,7 @@ module.exports = grammar(JavaScript, {
     export_statement: ($, previous) => choice(
       prec.right('declaration', seq(
         repeat(field('decorator', $.decorator)),
-        field('decorator', alias($.arkui_dsl_decorator, $.decorator)),
+        repeat1(field('decorator', alias($.arkui_dsl_decorator, $.decorator))),
         repeat(field('decorator', $.decorator)),
         'export',
         optional('default'),
@@ -441,6 +441,7 @@ module.exports = grammar(JavaScript, {
     ),
 
     method_signature: $ => seq(
+      repeat(field('decorator', $.decorator)),
       optional($.accessibility_modifier),
       optional('static'),
       optional($.override_modifier),
@@ -754,14 +755,20 @@ module.exports = grammar(JavaScript, {
 
     _arkui_function_declaration: $ => prec.right('declaration', seq(
       repeat(field('decorator', $.decorator)),
-      field('decorator', alias($.arkui_dsl_decorator, $.decorator)),
+      repeat1(field('decorator', alias($.arkui_dsl_decorator, $.decorator))),
       repeat(field('decorator', $.decorator)),
+      optional('declare'),
       optional('async'),
       'function',
       field('name', $.identifier),
       $._call_signature,
-      field('body', alias($._arkui_statement_block, $.statement_block)),
-      optional($._automatic_semicolon),
+      choice(
+        seq(
+          field('body', alias($._arkui_statement_block, $.statement_block)),
+          optional($._automatic_semicolon),
+        ),
+        choice($._semicolon, $._function_signature_automatic_semicolon),
+      ),
     )),
 
     _arkui_export_function_declaration: $ => prec.right('declaration', seq(
@@ -769,8 +776,13 @@ module.exports = grammar(JavaScript, {
       'function',
       field('name', $.identifier),
       $._call_signature,
-      field('body', alias($._arkui_statement_block, $.statement_block)),
-      optional($._automatic_semicolon),
+      choice(
+        seq(
+          field('body', alias($._arkui_statement_block, $.statement_block)),
+          optional($._automatic_semicolon),
+        ),
+        choice($._semicolon, $._function_signature_automatic_semicolon),
+      ),
     )),
 
     decorator: $ => choice(
@@ -960,7 +972,7 @@ module.exports = grammar(JavaScript, {
       repeat(choice(
         seq(
           repeat(field('decorator', $.decorator)),
-          field('decorator', alias($.arkui_dsl_decorator, $.decorator)),
+          repeat1(field('decorator', alias($.arkui_dsl_decorator, $.decorator))),
           repeat(field('decorator', $.decorator)),
           alias($._arkui_method_definition, $.method_definition),
           optional($._semicolon),
@@ -999,7 +1011,7 @@ module.exports = grammar(JavaScript, {
       repeat(choice(
         seq(
           repeat(field('decorator', $.decorator)),
-          field('decorator', alias($.arkui_dsl_decorator, $.decorator)),
+          repeat1(field('decorator', alias($.arkui_dsl_decorator, $.decorator))),
           repeat(field('decorator', $.decorator)),
           alias($._arkui_method_definition, $.method_definition),
           optional($._semicolon),
@@ -1066,7 +1078,7 @@ module.exports = grammar(JavaScript, {
       field('name', $._property_name),
       optional('?'),
       $._call_signature,
-      field('body', alias($._arkui_statement_block, $.statement_block)),
+      optional(field('body', alias($._arkui_statement_block, $.statement_block))),
     )),
 
     _arkui_struct_lifecycle_method_definition: $ => prec.left(seq(
@@ -1079,7 +1091,7 @@ module.exports = grammar(JavaScript, {
       field('name', alias(choice('build', 'pageTransition'), $.property_identifier)),
       optional('?'),
       $._call_signature,
-      field('body', alias($._arkui_statement_block, $.statement_block)),
+      optional(field('body', alias($._arkui_statement_block, $.statement_block))),
     )),
 
     _property_name: ($, previous) => choice(
@@ -1606,6 +1618,7 @@ module.exports = grammar(JavaScript, {
     call_signature: $ => $._call_signature,
 
     property_signature: $ => seq(
+      repeat(field('decorator', $.decorator)),
       optional($.accessibility_modifier),
       optional('static'),
       optional($.override_modifier),

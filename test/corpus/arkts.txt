@@ -23,7 +23,7 @@ export declare struct Foo {
           (property_identifier)
           (type_annotation
             (predefined_type)))
-        (method_signature
+        (method_definition
           (property_identifier)
           (formal_parameters)
           (type_annotation
@@ -1047,3 +1047,154 @@ struct ConfigurationIndependent {
                             (call_expression
                               (identifier)
                               (arguments))))))))))))))))
+
+==================================
+Repeated ArkUI DSL decorators still enable DSL bodies
+==================================
+
+@Builder
+@Builder
+function duplicatedBuilder() {
+  Text("builder")
+}
+
+@Extend(Text)
+@Styles
+function conflictingDecorators() {
+  .fontSize(20)
+}
+
+---
+
+(program
+  (function_declaration
+    (decorator
+      (identifier))
+    (decorator
+      (identifier))
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (arguments
+            (string
+              (string_fragment)))))))
+  (function_declaration
+    (decorator
+      (call_expression
+        (identifier)
+        (arguments
+          (identifier))))
+    (decorator
+      (identifier))
+    (identifier)
+    (formal_parameters)
+    (statement_block
+      (expression_statement
+        (leading_dot_expression
+          (call_expression
+            (identifier)
+            (arguments
+              (number))))))))
+
+==================================
+ArkUI DSL decorators on declaration signatures
+==================================
+
+@Builder
+declare function exportedBuilder(): void;
+
+@ComponentV2
+declare struct DeclaredComponent {
+  @Computed
+  get computed(): number;
+
+  @Builder
+  build(): void;
+}
+
+---
+
+(program
+  (function_declaration
+    (decorator
+      (identifier))
+    (identifier)
+    (formal_parameters)
+    (type_annotation
+      (predefined_type)))
+  (struct_declaration
+    (decorator
+      (identifier))
+    (type_identifier)
+    (struct_body
+      (method_signature
+        (decorator
+          (identifier))
+        (property_identifier)
+        (formal_parameters)
+        (type_annotation
+          (predefined_type)))
+      (decorator
+        (identifier))
+      (method_definition
+        (property_identifier)
+        (formal_parameters)
+        (type_annotation
+          (predefined_type))))))
+
+==================================
+Decorated interface members
+==================================
+
+interface DecoratedMembers {
+  @Memo prop: () => void;
+}
+
+---
+
+(program
+  (interface_declaration
+    (type_identifier)
+    (interface_body
+      (property_signature
+        (decorator
+          (identifier))
+        (property_identifier)
+        (type_annotation
+          (function_type
+            (formal_parameters)
+            (predefined_type)))))))
+
+==================================
+Default import binding named lazy stays a standard import
+==================================
+
+import lazy from "mod";
+import lazy { value } from "lazy-mod";
+import lazy other from "other-mod";
+
+---
+
+(program
+  (import_statement
+    (import_clause
+      (identifier))
+    (string
+      (string_fragment)))
+  (import_statement
+    (lazy_import_statement
+      (import_clause
+        (named_imports
+          (import_specifier
+            (identifier))))
+      (string
+        (string_fragment))))
+  (import_statement
+    (lazy_import_statement
+      (import_clause
+        (identifier))
+      (string
+        (string_fragment)))))
