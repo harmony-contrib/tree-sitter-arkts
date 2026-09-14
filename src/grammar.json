@@ -80,16 +80,19 @@
                 }
               },
               {
-                "type": "FIELD",
-                "name": "decorator",
+                "type": "REPEAT1",
                 "content": {
-                  "type": "ALIAS",
+                  "type": "FIELD",
+                  "name": "decorator",
                   "content": {
-                    "type": "SYMBOL",
-                    "name": "arkui_dsl_decorator"
-                  },
-                  "named": true,
-                  "value": "decorator"
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "arkui_dsl_decorator"
+                    },
+                    "named": true,
+                    "value": "decorator"
+                  }
                 }
               },
               {
@@ -7040,16 +7043,19 @@
                     }
                   },
                   {
-                    "type": "FIELD",
-                    "name": "decorator",
+                    "type": "REPEAT1",
                     "content": {
-                      "type": "ALIAS",
+                      "type": "FIELD",
+                      "name": "decorator",
                       "content": {
-                        "type": "SYMBOL",
-                        "name": "arkui_dsl_decorator"
-                      },
-                      "named": true,
-                      "value": "decorator"
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "arkui_dsl_decorator"
+                        },
+                        "named": true,
+                        "value": "decorator"
+                      }
                     }
                   },
                   {
@@ -8113,8 +8119,17 @@
         {
           "type": "ALIAS",
           "content": {
-            "type": "STRING",
-            "value": "type"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "type"
+              },
+              {
+                "type": "STRING",
+                "value": "lazy"
+              }
+            ]
           },
           "named": true,
           "value": "identifier"
@@ -8141,6 +8156,17 @@
     "method_signature": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "FIELD",
+            "name": "decorator",
+            "content": {
+              "type": "SYMBOL",
+              "name": "decorator"
+            }
+          }
+        },
         {
           "type": "CHOICE",
           "members": [
@@ -9759,16 +9785,19 @@
             }
           },
           {
-            "type": "FIELD",
-            "name": "decorator",
+            "type": "REPEAT1",
             "content": {
-              "type": "ALIAS",
+              "type": "FIELD",
+              "name": "decorator",
               "content": {
-                "type": "SYMBOL",
-                "name": "arkui_dsl_decorator"
-              },
-              "named": true,
-              "value": "decorator"
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "arkui_dsl_decorator"
+                },
+                "named": true,
+                "value": "decorator"
+              }
             }
           },
           {
@@ -9781,6 +9810,18 @@
                 "name": "decorator"
               }
             }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "declare"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "CHOICE",
@@ -9811,27 +9852,50 @@
             "name": "_call_signature"
           },
           {
-            "type": "FIELD",
-            "name": "body",
-            "content": {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_arkui_statement_block"
-              },
-              "named": true,
-              "value": "statement_block"
-            }
-          },
-          {
             "type": "CHOICE",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "_automatic_semicolon"
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "FIELD",
+                    "name": "body",
+                    "content": {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "_arkui_statement_block"
+                      },
+                      "named": true,
+                      "value": "statement_block"
+                    }
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_automatic_semicolon"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                ]
               },
               {
-                "type": "BLANK"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_semicolon"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_function_signature_automatic_semicolon"
+                  }
+                ]
               }
             ]
           }
@@ -9873,27 +9937,50 @@
             "name": "_call_signature"
           },
           {
-            "type": "FIELD",
-            "name": "body",
-            "content": {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_arkui_statement_block"
-              },
-              "named": true,
-              "value": "statement_block"
-            }
-          },
-          {
             "type": "CHOICE",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "_automatic_semicolon"
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "FIELD",
+                    "name": "body",
+                    "content": {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "_arkui_statement_block"
+                      },
+                      "named": true,
+                      "value": "statement_block"
+                    }
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_automatic_semicolon"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  }
+                ]
               },
               {
-                "type": "BLANK"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_semicolon"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_function_signature_automatic_semicolon"
+                  }
+                ]
               }
             ]
           }
@@ -10731,16 +10818,19 @@
                     }
                   },
                   {
-                    "type": "FIELD",
-                    "name": "decorator",
+                    "type": "REPEAT1",
                     "content": {
-                      "type": "ALIAS",
+                      "type": "FIELD",
+                      "name": "decorator",
                       "content": {
-                        "type": "SYMBOL",
-                        "name": "arkui_dsl_decorator"
-                      },
-                      "named": true,
-                      "value": "decorator"
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "SYMBOL",
+                          "name": "arkui_dsl_decorator"
+                        },
+                        "named": true,
+                        "value": "decorator"
+                      }
                     }
                   },
                   {
@@ -11153,17 +11243,25 @@
             "name": "_call_signature"
           },
           {
-            "type": "FIELD",
-            "name": "body",
-            "content": {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_arkui_statement_block"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "body",
+                "content": {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_arkui_statement_block"
+                  },
+                  "named": true,
+                  "value": "statement_block"
+                }
               },
-              "named": true,
-              "value": "statement_block"
-            }
+              {
+                "type": "BLANK"
+              }
+            ]
           }
         ]
       }
@@ -11298,17 +11396,25 @@
             "name": "_call_signature"
           },
           {
-            "type": "FIELD",
-            "name": "body",
-            "content": {
-              "type": "ALIAS",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_arkui_statement_block"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "body",
+                "content": {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_arkui_statement_block"
+                  },
+                  "named": true,
+                  "value": "statement_block"
+                }
               },
-              "named": true,
-              "value": "statement_block"
-            }
+              {
+                "type": "BLANK"
+              }
+            ]
           }
         ]
       }
@@ -13876,6 +13982,17 @@
     "property_signature": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "FIELD",
+            "name": "decorator",
+            "content": {
+              "type": "SYMBOL",
+              "name": "decorator"
+            }
+          }
+        },
         {
           "type": "CHOICE",
           "members": [
